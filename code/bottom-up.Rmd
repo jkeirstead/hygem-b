@@ -1,0 +1,20 @@
+## Bottom-up model
+
+The bottom-up model uses the estimated fuel consumption predicted by the top-down model to calculate the use of specific technologies within each region and their associated cost.
+
+```{r bottom-config}
+## Read in the model components
+##
+## Each of these files contains named chunks which are then called below.
+read_chunk('bottom-up-chunks.r')
+```
+
+```{r load-results}
+file <- "../data/fuel-predictions.csv"
+if (file.exists(file)) {
+	results <- read.csv(file)
+} else {
+	stop("Results file not found.")
+}
+```
+

@@ -1,0 +1,7 @@
+.Rhistory
+hygem-b.html
+*.md
+clean-input-data.csv
+*.Rda
+iea-buildings-data.csv
+figure/

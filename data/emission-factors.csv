@@ -1,0 +1,91 @@
+region,fuel,ef
+China,Biomass,12
+China,Coal,94.6
+China,Electricity,167.95725
+China,Gas,56.1
+China,Heat,0
+China,Oil,77.4
+China,Renewables,0
+China,Uranium,1.94
+China,Other,77.4
+Eastern Europe,Biomass,10.8
+Eastern Europe,Coal,94.6
+Eastern Europe,Electricity,73.05405556
+Eastern Europe,Gas,56.1
+Eastern Europe,Heat,0
+Eastern Europe,Oil,77.4
+Eastern Europe,Renewables,0
+Eastern Europe,Uranium,1.94
+Eastern Europe,Other,77.4
+India,Biomass,12
+India,Coal,94.6
+India,Electricity,172.5337222
+India,Gas,56.1
+India,Heat,0
+India,Oil,77.4
+India,Renewables,0
+India,Uranium,1.94
+India,Other,77.4
+Latin America,Biomass,10.8
+Latin America,Coal,94.6
+Latin America,Electricity,75.191
+Latin America,Gas,56.1
+Latin America,Heat,0
+Latin America,Oil,77.4
+Latin America,Renewables,0
+Latin America,Uranium,1.94
+Latin America,Other,77.4
+MENA,Biomass,12
+MENA,Coal,94.6
+MENA,Electricity,109.3753889
+MENA,Gas,56.1
+MENA,Heat,0
+MENA,Oil,77.4
+MENA,Renewables,0
+MENA,Uranium,1.94
+MENA,Other,77.4
+Non-OECD Asia,Biomass,12.8
+Non-OECD Asia,Coal,94.6
+Non-OECD Asia,Electricity,123.4926944
+Non-OECD Asia,Gas,56.1
+Non-OECD Asia,Heat,0
+Non-OECD Asia,Oil,77.4
+Non-OECD Asia,Renewables,0
+Non-OECD Asia,Uranium,1.94
+Non-OECD Asia,Other,77.4
+OECD Asia Oceania,Biomass,10.8
+OECD Asia Oceania,Coal,94.6
+OECD Asia Oceania,Electricity,111.2015833
+OECD Asia Oceania,Gas,56.1
+OECD Asia Oceania,Heat,0
+OECD Asia Oceania,Oil,77.4
+OECD Asia Oceania,Renewables,0
+OECD Asia Oceania,Uranium,1.94
+OECD Asia Oceania,Other,77.4
+OECD Europe,Biomass,10.8
+OECD Europe,Coal,94.6
+OECD Europe,Electricity,62.18886111
+OECD Europe,Gas,56.1
+OECD Europe,Heat,0
+OECD Europe,Oil,77.4
+OECD Europe,Renewables,0
+OECD Europe,Uranium,1.94
+OECD Europe,Other,77.4
+OECD North America,Biomass,10.8
+OECD North America,Coal,94.6
+OECD North America,Electricity,143.1456667
+OECD North America,Gas,56.1
+OECD North America,Heat,0
+OECD North America,Oil,77.4
+OECD North America,Renewables,0
+OECD North America,Uranium,1.94
+OECD North America,Other,77.4
+Sub-Saharan Africa,Biomass,14.4
+Sub-Saharan Africa,Coal,94.6
+Sub-Saharan Africa,Electricity,104.6830556
+Sub-Saharan Africa,Gas,56.1
+Sub-Saharan Africa,Heat,0
+Sub-Saharan Africa,Oil,77.4
+Sub-Saharan Africa,Renewables,0
+Sub-Saharan Africa,Uranium,1.94
+Sub-Saharan Africa,Other,77.4

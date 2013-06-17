@@ -1,0 +1,25 @@
+# HyGEM-B results
+
+```{r initialize, echo=FALSE}
+## Knitr configuration options
+opts_chunk$set(echo=FALSE, dev=c('png', 'pdf'), message=FALSE)
+```
+
+## Model configuration
+
+The model was run at `r sprintf("%s", Sys.time())` 
+
+```{r show-config, echo=FALSE}
+sprintf("Using archived top-down results? %s", use_TD_archive)
+run_top_down <- !use_TD_archive
+```
+  
+```{r child1, child='top-down.Rmd', eval=TRUE}
+```
+
+```{r child-BU, child='bottom-up.Rmw', eval=FALSE}
+```
+
+## More information
+
+For more information, please see our paper at [journal name](http://journal.com).
