@@ -1,0 +1,31 @@
+year,region,heating.intensity
+2010,OECD Europe,191
+2010,OECD North America,126
+2010,India,55
+2010,China,126
+2010,OECD Asia Oceania,72
+2010,Sub-Saharan Africa,159
+2010,Latin America,195
+2010,MENA,169
+2010,Eastern Europe,205
+2010,Non-OECD Asia,55
+2050,OECD Europe,191
+2050,OECD North America,126
+2050,India,55
+2050,China,126
+2050,OECD Asia Oceania,72
+2050,Sub-Saharan Africa,159
+2050,Latin America,195
+2050,MENA,169
+2050,Eastern Europe,205
+2050,Non-OECD Asia,55
+2050.lowC,OECD Europe,52
+2050.lowC,OECD North America,52
+2050.lowC,India,52
+2050.lowC,China,52
+2050.lowC,OECD Asia Oceania,54
+2050.lowC,Sub-Saharan Africa,52
+2050.lowC,Latin America,70
+2050.lowC,MENA,52
+2050.lowC,Eastern Europe,80
+2050.lowC,Non-OECD Asia,52

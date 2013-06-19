@@ -9,12 +9,10 @@ The bottom-up model uses the estimated fuel consumption predicted by the top-dow
 read_chunk('bottom-up-chunks.r')
 ```
 
-```{r load-results}
-file <- "../data/fuel-predictions.csv"
-if (file.exists(file)) {
-	results <- read.csv(file)
-} else {
-	stop("Results file not found.")
-}
+
+```{r load-bottom-up-data}
 ```
 
+```{r stopped-here, echo=TRUE}
+
+```

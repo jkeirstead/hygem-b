@@ -14,10 +14,10 @@ sprintf("Using archived top-down results? %s", use_TD_archive)
 run_top_down <- !use_TD_archive
 ```
   
-```{r child1, child='top-down.Rmd', eval=TRUE}
+```{r child-top-down, child='top-down.Rmd', eval=TRUE}
 ```
 
-```{r child-BU, child='bottom-up.Rmw', eval=FALSE}
+```{r child-bottom-up, child='bottom-up.Rmd', eval=TRUE}
 ```
 
 ## More information

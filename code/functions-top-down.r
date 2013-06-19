@@ -43,6 +43,10 @@ load_top_down_inputs <- function() {
       
       ## Save the results for later
       write.csv(data, clean_file, row.names=FALSE)
+
+      ## Also save a version without the IEA data for bottom-up model
+      df <- subset(data, select=c(region, year, gdp, population, urban))
+      write.csv(df, "../data/un-input-data.csv", row.names=FALSE)
     }
   }
   
