@@ -159,4 +159,28 @@ calculate_summary <- function(fuel, savings) {
   return(tmp)
 }
 
+## Calculates the emissions associated with 2050 energy demands
+##
+## Calculates global CO2 emissions for global energy consumption.  Emissions factors are based on a separate optimization model of the global power sector, see Shah et al (2013).
+## @param df a dataframe with the energy demands (in EJ) by region, fuel and scenario
+## @return a dataframe with the emissions (in GtCO2) by region, fuel, and scenario
+calculate_emissions <- function(df) {
+
+  ## Load the emission factors and melt by scenario
+  efs <- read.csv("../data/LCS_emission-factors.csv")
+  efs <- melt(efs, id=c("region", "fuel"), variable.name="scenario",
+              value.name="ef")
+
+  ## Melt the energy demands to match
+  df <- melt(df, id=c("year", "region", "fuel"), variable.name="scenario",
+             value.name="energy")
+  
+  ## Merge these with the energy demands
+  tmp <- merge(df, efs)
+
+  ## Calculate the emissions (in Gt CO2)
+  tmp <- transform(tmp, emissions=energy*ef/1000)
+
+  return(tmp)
+}
 

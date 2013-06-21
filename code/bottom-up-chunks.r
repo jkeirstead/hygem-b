@@ -86,4 +86,7 @@ sprintf("Total LMS demand = %.2f EJ", sum(results$LMS))
 sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
 
 ## @knitr emissions-calculation
-cat("Still TODO")
+emissions <- calculate_emissions(results)
+em <- dcast(emissions, year + region + fuel ~ scenario, value.var="emissions")
+sprintf("Total LMS emissions = %.2f Gt CO2", sum(em$LMS))
+sprintf("Total LCS emissions = %.2f Gt CO2", sum(em$LCS))
