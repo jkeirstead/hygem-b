@@ -32,6 +32,58 @@ elec_share <- load_electricity_share_data(elec_data)
 ## Finally get space and water heating fuel transfer data
 heat_fuel_data <- load_heat_fuel_data(fuel_data)
 
+## @knitr init-models
+## Make sure the output directory exists
+outdir <- "../output"
+if (!file.exists(outdir)) dir.create(outdir)
+source("functions-bottom-up.r")
 
-## @knitr stopped-here
-x <- 1
+## @knitr run-space-heat-model
+## Each of these models calculates the change in energy consumption
+## by region and fuel.
+## Start with the residential space heating model
+resi.sh.results <- calculate_residential_space_heat(resi.sh.data, fuel_data)
+sprintf("Global savings from improved residential space heating = %.2f EJ", sum(resi.sh.results$savings))
+
+## @knitr run-gshp-model
+gshp.model <- calculate_GSHP_heat(gshp, fuel_data)
+sprintf("Increased GSHP use = %.2f EJ less fossil fuel demand", sum(subset(gshp.model, fuel!="elec")$gshp.energy))
+sprintf("Increased GSHP use = %.2f EJ more electricity demand", -sum(subset(gshp.model, fuel=="elec")$gshp.energy))
+sprintf("Net savings = %.2f EJ", sum(gshp.model$gshp.energy))
+
+## @knitr run-electrical-model
+elec.eff <- calculate_electrical_savings(elec_share)
+sprintf("Total savings from improved electrical appliance and lighting efficiency = %.2f EJ", sum(elec.eff$saving))
+
+## @knitr run-fuel-switch-model
+fuel_transfer <- calculate_fuel_switching(heat_fuel_data)
+sprintf("Total savings from fuel switching = %.2f EJ", sum(fuel_transfer$change))
+
+## @knitr bottom-up-summary
+## Create a dataframe summarizing all of the interventions
+space_heat <- subset(resi.sh.results, year==2050,
+                     select=c(year, region, fuel, savings))
+heat_pumps <- subset(gshp.model, year==2050,
+                     select=c(year, region, fuel, gshp.energy))
+efficiency <- subset(elec.eff, year==2050,
+                     select=c(year, region, fuel, saving))
+shifting <- subset(fuel_transfer, year==2050 & scenario=="lowC",
+                    select=c(year, region, fuel, change))
+carbon <- cbind(shifting[,1:3], carbon=0)
+interventions <- merge(merge(merge(merge(space_heat, heat_pumps), efficiency, all.x=TRUE),
+                       shifting), carbon)
+
+names(interventions) <- c("year", "region", "fuel",
+                          "space_heat", "gshp", "efficiency", "shifting", "carbon")
+## Calculate the summary
+results <- calculate_summary(fuel_data, interventions)
+if (nrow(subset(results, LCS<0))) {
+  tmp <- sum(subset(results, LCS<0)$LCS)
+  warning(sprintf("There is %.2f EJ of negative demand.  Converting this to 0.", tmp))
+  results <- transform(results, LCS=replace(LCS, LCS<0, 0))
+}
+sprintf("Total LMS demand = %.2f EJ", sum(results$LMS))
+sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
+
+## @knitr emissions-calculation
+cat("Still TODO")

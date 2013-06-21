@@ -1,6 +1,6 @@
 ## Bottom-up model
 
-The bottom-up model uses the estimated fuel consumption predicted by the top-down model to calculate the use of specific technologies within each region and their associated cost.
+The bottom-up model starts with the results of the top-down regression to provide an estimate of the demand for energy in the buildings sector by fuel type and region.  Five interventions are then modelled to estimate the savings that result from: improved building fabric, increased use of ground-source heat pumps, improved efficiency of electrical appliances and lighting, and switching of fuels from fossil to non-fossil sources. The model results can be found in the `output` directory.
 
 ```{r bottom-config}
 ## Read in the model components
@@ -13,6 +13,34 @@ read_chunk('bottom-up-chunks.r')
 ```{r load-bottom-up-data}
 ```
 
-```{r stopped-here, echo=TRUE}
+```{r init-models}
+```
 
+### Residential space heat model
+<span style="color: red;">TODO Mark's original code had some manual checking in place. Is this still needed?</span>
+```{r run-space-heat-model}
+```
+
+### Ground source heat pumps
+```{r run-gshp-model}
+```
+
+### Electrical appliance and lighting efficiency
+
+```{r run-electrical-model}
+```
+### Fuel switching in space and water heating
+```{r run-fuel-switch-model}
+```
+
+### Summary
+
+Below is a summary of the energy and emission savings from all of these interventions.
+
+```{r bottom-up-summary}
+```
+
+Additionally there is an assumed change in the carbon intensity of the electricity used.
+
+```{r emissions-calculation}
 ```
