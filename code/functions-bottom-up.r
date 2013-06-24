@@ -151,12 +151,11 @@ calculate_summary <- function(fuel, savings) {
   
   ## Calculate the resulting savings
   LCS <- transform(LCS, new_energy=fit - space_heat - gshp - efficiency - shifting - carbon)
-  LCS <- LCS[,c("year", "region", "fuel", "new_energy")]
 
-  ## Create an overall summary
-  tmp <- merge(LMS, LCS)
-  names(tmp) <- c("region", "fuel", "year", "LMS", "LCS")
-  return(tmp)
+  ## Tidy the labels
+  names(LCS) <- c("region", "fuel", "year", "LMS", "space_heat", "gshp",
+                  "efficiency", "shifting", "carbon", "LCS")
+  return(LCS)
 }
 
 ## Calculates the emissions associated with 2050 energy demands
@@ -184,3 +183,41 @@ calculate_emissions <- function(df) {
   return(tmp)
 }
 
+## Create a waterfall plot
+##
+## Creates a waterfall plot.  Assumes that the data is in a dataframe according to LMS - space_heat - gshp - efficiency - carbon - shifting = LCS
+## @return a ggplot object
+make_waterfall_plot <- function(df) {
+
+  ## First we want to do this globally so
+  df.m <- melt(df, id=c("region", "fuel", "year"))
+  df.m <- ddply(df.m, .(year, variable), summarize, total=round(sum(value), 3))
+
+  min.total <- with(df.m, c(0, head(total, 1) - cumsum(tail(total, -1))))
+  max.total <- with(df.m, c(head(total, 1), rev(head(cumsum(rev(total)), -1))))
+
+  waterfall.df <- cbind(df.m, min=min.total, max=max.total)
+
+  cats <- c("LMS", "Space heating", "GSHPs", "Elec efficiency",
+            "Fuel switching", "Decarbonizing grid", "LCS")
+  waterfall.df <- mutate(waterfall.df, variable=factor(variable,
+                                         labels=cats,
+                                         lev=c("LMS", "space_heat", "gshp",
+                                           "efficiency", "shifting",
+                                           "carbon", "LCS")))
+     
+  offset <- 0.3
+  gg <- ggplot(waterfall.df) + 
+    geom_rect(aes(ymin=min, ymax=max,
+                  xmin=as.numeric(variable) - offset,
+                  xmax=as.numeric(variable) + offset)) +
+                    geom_segment(data=tail(waterfall.df, n=nrow(waterfall.df)-1),
+                                 aes(x=as.numeric(variable) + offset - 1,
+                                     xend=as.numeric(variable) + 1 - offset - 1,
+                                     y=max,
+                                     yend=max), linetype="dashed") +
+                                       scale_x_continuous(breaks=1:length(cats), labels=cats) +
+                                         theme_bw() +
+                                           labs(x="", y="Value")
+  return(gg)
+}

@@ -185,3 +185,32 @@ predict_to_string <- function(df, y=2050, digits=1) {
 logit <- function(x) {
   return(log(x/(1-x)))
 }
+
+## Generates a waterfall plot
+##
+## @param df the original dataframe
+## @return a ggplot object
+make_waterfall <- function(df) {
+  cats <- c("LMS", "Space Heat", "GSHP", "Electrical", "LCS")
+  df <- data.frame(cat=factor(
+                     c("LMS", "Space Heat", "GSHP", "Electrical", "LCS"),
+                     lev=cats),
+                   min=c(0, 150, 140, 130, 0),
+                   max=c(200, 200, 150, 140, 130))
+  
+  offset <- 0.3
+  gg <- ggplot(df) + 
+    geom_rect(aes(ymin=min, ymax=max,
+                  xmin=as.numeric(cat) - offset,
+                  xmax=as.numeric(cat) + offset)) +
+                    geom_segment(data=tail(df, n=nrow(df)-1),
+                                 aes(x=as.numeric(cat) + offset - 1,
+                                     xend=as.numeric(cat) + 1 - offset - 1,
+                                     y=max,
+                                     yend=max), linetype="dashed") +
+                                       scale_x_continuous(breaks=1:5,labels=cats) +
+                                         theme_bw() +
+                                           labs(x="", y="Value")
+
+  return(gg)
+}

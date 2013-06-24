@@ -84,6 +84,8 @@ if (nrow(subset(results, LCS<0))) {
 }
 sprintf("Total LMS demand = %.2f EJ", sum(results$LMS))
 sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
+gg <- make_waterfall_plot(results)
+print(gg + labs(y="Building energy demand (EJ)")
 
 ## @knitr emissions-calculation
 emissions <- calculate_emissions(results)
