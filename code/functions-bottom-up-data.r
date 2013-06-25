@@ -41,7 +41,8 @@ load_fuel_data <- function() {
   if (file.exists(file)) {
     fuel_data <- read.csv(file)
   } else {
-    stop("Results file not found.")
+    file <- "../data/archived-fuel-predictions.csv"
+    fuel_data <- read.csv(file)
   }
 
   ## Tidy up the fuel data 
