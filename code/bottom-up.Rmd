@@ -1,6 +1,6 @@
 ## Bottom-up model
 
-The bottom-up model starts with the results of the top-down regression to provide an estimate of the demand for energy in the buildings sector by fuel type and region.  Five interventions are then modelled to estimate the savings that result from: improved building fabric, increased use of ground-source heat pumps, improved efficiency of electrical appliances and lighting, and switching of fuels from fossil to non-fossil sources. The model results can be found in the `output` directory.
+The bottom-up model starts with the results of the top-down regression to provide an estimate of the demand for energy in the buildings sector by fuel type and region.  Five interventions are then modelled to estimate the energy and emissions savings that result from: improved building fabric, increased use of ground-source heat pumps, improved efficiency of electrical appliances and lighting, switching of fuels from fossil to non-fossil sources, and decarbonization of the electricity grid.
 
 ```{r bottom-config}
 ## Read in the model components
@@ -8,7 +8,6 @@ The bottom-up model starts with the results of the top-down regression to provid
 ## Each of these files contains named chunks which are then called below.
 read_chunk('bottom-up-chunks.r')
 ```
-
 
 ```{r load-bottom-up-data}
 ```

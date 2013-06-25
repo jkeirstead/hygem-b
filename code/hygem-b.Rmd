@@ -7,7 +7,7 @@ opts_chunk$set(echo=FALSE, dev=c('png', 'pdf'))
 
 ## Model configuration
 
-The model was run at `r sprintf("%s", Sys.time())` 
+The model was run at `r sprintf("%s", Sys.time())`.
 
 ```{r show-config, echo=FALSE}
 if (run_top_down) {
@@ -21,12 +21,14 @@ if (run_top_down) {
 source('functions.r')
 source('functions-top-down.r')
 source('functions-top-down-data.r')
+source('functions-bottom-up.r')
+source('functions-bottom-up-data.r')
 ```
 
 ```{r child-top-down, child='top-down.Rmd', eval=run_top_down}
 ```
 
-```{r child-bottom-up, child='bottom-up.Rmd', eval=TRUE}
+```{r child-bottom-up, child='bottom-up.Rmd'}
 ```
 
 ## More information

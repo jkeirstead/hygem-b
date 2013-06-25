@@ -115,9 +115,15 @@ load_sector_share_data <- function() {
 ##
 ## Loads historical shares of commercial and residential electricity demand in the building sector.
 ## @param elec_data a data frame giving electricity demand by region and year
+## @param resi_elec_for_heat fraction of residential electricity for heat.  Default = 0.3, Source: DOE 2011 Buildings energy data book
+## @param comm_elec_for_heat fraction of commercial electricity for heat.  Default = 0.1, Source: DOE 2011 Buildings energy data book
+## @param eff_savings: assumed savings from increased efficiency, default = 0.3
 ## @return a data frame giving the global average share of building electricity demand in the commercial and residential sectors (fraction)
 ## @source IEA \link{http://www.esds.ac.uk/findingData/snDescription.asp?sn=6301&key=}
-load_electricity_share_data <- function(elec_data) {
+load_electricity_share_data <- function(elec_data,
+                                        resi_elec_for_heat=0.3,
+                                        comm_elec_for_heat=0.1,
+                                        eff_savings=0.3) {
   ## Load in the commercial share data from the IEA
   df <- read.csv("../data/comm_share.csv")
   df <- df[,-12]
@@ -146,11 +152,9 @@ load_electricity_share_data <- function(elec_data) {
   tmp <- mutate(tmp, elec_comm=fit*comm_share, elec_resi=fit*res_share)
 
   ## Calculate the non-heat share of electricity
-  ## Source: DOE 2011 Buildings energy data book
-  ## 30% of residential building sector elec demand for heating, 10% of commercial
-  tmp <- cbind(tmp, comm_nonheatelec=0.9, res_nonheatelec=0.7)
-  ## Assume a 30% savings available from energy efficiency in lights and appliances
-  tmp <- cbind(tmp, eff=0.7)
+  tmp <- cbind(tmp, comm_nonheatelec=(1-comm_elec_for_heat),
+               res_nonheatelec=(1-resi_elec_for_heat))
+  tmp <- cbind(tmp, eff=(1-eff_savings))
   return(tmp)
 }
 
@@ -158,13 +162,16 @@ load_electricity_share_data <- function(elec_data) {
 ## Loads fuel demands for space and water heating
 ##
 ## @param fuel_data the data frame containing the fuel data by region and year
-## @detail Assume that the share of demand for space and water heating is 30% overall (DOE 2011).  Estimate a 30% reduction in coal, gas, and oil by increased electricity use, 10% use of solar heating, and 10% biomass.
+## @param heating_share share of total energy demand for space and water heating.  Default = 0.3 (DOE 2011)
+## @param displaced_share estimated share of heating demand that can be displaced.  Default = 0.5, assumed as 30% reduction in coal, gas, and oil by increased electricity use, 10% use of solar heating, and 10% biomass.
 ## @source DOE. Buildings Energy Data Book. U.S. Department of Energy, 2011. \link{http://buildingsdatabook.eren.doe.gov/}
-load_heat_fuel_data <- function(fuel_data) {
+load_heat_fuel_data <- function(fuel_data, heating_share=0.3,
+                                displaced_share=0.5) {
   df <- subset(fuel_data, year==2050)
 
   ## Add new parameters
-  df <- transform(df, heat_share=0.3, displaced=0.5, scenario="lowC")
+  df <- transform(df, heat_share=heating_share, displaced=displaced_share,
+                  scenario="lowC")
   ## Calculate heat fuel demand
   df <- transform(df, heat=fit*heat_share)
   return(df)
