@@ -37,7 +37,6 @@ heat_fuel_data <- load_heat_fuel_data(fuel_data)
 ## Make sure the output directory exists
 outdir <- "../output"
 if (!file.exists(outdir)) dir.create(outdir)
-source("functions-bottom-up.r")
 
 ## @knitr run-space-heat-model
 ## Each of these models calculates the change in energy consumption
@@ -45,6 +44,7 @@ source("functions-bottom-up.r")
 ## Start with the residential space heating model
 resi.sh.results <- calculate_residential_space_heat(resi.sh.data, fuel_data)
 sprintf("Global savings from improved residential space heating = %.2f EJ", sum(resi.sh.results$savings))
+with(resi.sh.results, sprintf("Equivalent to a %.1f%% saving on a 2050 LMS heating demand of %.2f EJ", 100*sum(savings)/sum(LMS), sum(LMS)))
 
 ## @knitr run-gshp-model
 gshp.model <- calculate_GSHP_heat(gshp, fuel_data)
