@@ -1,10 +1,5 @@
 ## Code chunks for the top-down regression model
 
-## @knitr load-functions
-source('functions.r')
-source('functions-top-down.r')
-source('functions-top-down-data.r')
-
 ## @knitr top-down-inputs
 data <- load_top_down_inputs()
 show_top_down_inputs(data)

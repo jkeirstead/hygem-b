@@ -9,11 +9,8 @@ read_chunk('top-down-chunks.r')
 
 The top-down model uses regression models to estimate the energy consumption of the global buildings sector in 2050.
 
-```{r load-functions}
-```
-
 ### Inputs
-```{r top-down-inputs, eval=run_top_down, warning=FALSE}
+```{r top-down-inputs, warning=FALSE}
 ```
 
 ### Results
@@ -21,16 +18,16 @@ The top-down model uses regression models to estimate the energy consumption of 
 There are three separate top-down models: one calculating global building energy demands in aggregate (**global**), one calculating building energy demands disaggregated by region (**region**), and one with demands disaggregated by both region and fuel (**fuel**).  It is the `fuel` model which is used to calibrate the bottom-up model.
 
 #### Global 
-```{r top-down-global, eval=run_top_down, echo=FALSE}
+```{r top-down-global, echo=FALSE}
 ```
 #### Regional
-```{r top-down-regional, eval=run_top_down, echo=FALSE}
+```{r top-down-regional, echo=FALSE}
 ```
 #### Fuels
-```{r top-down-fuels, eval=run_top_down, fig.width=12, fig.height=12}
+```{r top-down-fuels, fig.width=12, fig.height=12}
 ```
 
 #### Summary
 
-```{r top-down-results, eval=run_top_down, results='asis'}
+```{r top-down-results, results='asis'}
 ```
