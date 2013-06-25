@@ -17,7 +17,6 @@ read_chunk('bottom-up-chunks.r')
 ```
 
 ### Residential space heat model
-<span style="color: red;">TODO Mark's original code had some manual checking in place. Is this still needed?</span>
 ```{r run-space-heat-model}
 ```
 

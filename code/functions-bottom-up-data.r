@@ -1,6 +1,5 @@
 ## Functions for loading the data needed by the bottom-up model
 
-
 ## Loads heating degree day data 
 ##
 ## Loads population-weighted heating degree days for world regions in 2010, based on a 18 deg Celsius base temperature
