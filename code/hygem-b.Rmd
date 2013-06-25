@@ -10,8 +10,11 @@ opts_chunk$set(echo=FALSE, dev=c('png', 'pdf'), message=FALSE)
 The model was run at `r sprintf("%s", Sys.time())` 
 
 ```{r show-config, echo=FALSE}
-sprintf("Using archived top-down results? %s", use_TD_archive)
-run_top_down <- !use_TD_archive
+if (run_top_down) {
+  message("Running top down model");
+} else {
+  message("Using archived top-down model results");
+}
 ```
   
 ```{r child-top-down, child='top-down.Rmd', eval=TRUE}
