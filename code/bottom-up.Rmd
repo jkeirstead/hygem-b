@@ -38,12 +38,12 @@ This model calculates demand for space heating in the residential based on emper
 
 Below is a summary of the energy and emission savings from all of these interventions.
 
-```{r bottom-up-summary}
+```{r bottom-up-summary, fig.width=10}
 ```
 
 Additionally there is an assumed change in the carbon intensity of the electricity used.
 
-```{r emissions-calculation}
+```{r emissions-calculation, fig.width=10}
 ```
 ```{r emissions-table, results='asis'}
 ```

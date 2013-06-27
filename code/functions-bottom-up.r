@@ -242,3 +242,93 @@ split_by_sector <- function(df) {
   
   return(final)
 }
+
+## To calculate the emissions by intervention, one should:
+## 1) calculate the emissions with full resolution (i.e. by sector, region, etc)
+##    using the LMS and LCS emissions factors separately
+## 2) take only those emissions from non-electricity under the LMS efs and
+##    use that to calculate the emissions under all of the interventions
+##    except for decarbonization
+## 3) use the LCS electricity factors and multiply by all of the electricity
+##    demands in the LCS to get the decarbonization figure
+## 4) this should then equal the LCS emissions if you just applied it normally.
+calculate_emissions_detail <- function(df) {
+
+  ## Load the emission factors and melt by scenario
+  efs <- read.csv("../data/LCS_emission-factors.csv")
+  efs.save <- transform(efs, save=LMS-LCS)
+  efs <- melt(efs, id=c("region", "fuel"), variable.name="scenario",
+              value.name="ef")
+
+  ## Melt the energy data
+  df <- melt(df, id=c("region", "fuel", "year", "sector"),
+             variable.name="intervention", value.name="energy")
+
+  ## Merge with the emission factors
+  tmp <- merge(df, efs.save)
+
+  ## Calculate the emissions in Gt CO2
+  tmp <- transform(tmp, LMS.emissions=energy*LMS/1000, LCS.emissions=energy*LCS/1000)
+  
+  ## Now the hard part.  Isolate LMS and LCS scenarios 
+  lms.energy <- subset(tmp, intervention=="LMS")
+  lms <- ddply(lms.energy, .(sector), summarize, intervention="LMS",
+               emissions=sum(LMS.emissions))
+  
+  lcs.energy <- subset(tmp, intervention=="LCS")
+  lcs <- ddply(lcs.energy, .(sector), summarize, intervention="LCS",
+               emissions=sum(LCS.emissions))
+
+  ## Now calculate the others - BUT separate the fuels
+  ## First calculate the savings from the fossil fuels
+  fossil <- subset(tmp, !is.element(intervention, c("LMS", "LCS", "carbon")) &
+                   fuel!="elec")
+  ## Without a change in carbon intensity, the emissions saved would be
+  ## the LMS.emissions.  But the emissions have changed so you get an extra saving
+  f <- transform(fossil, savings=LMS.emissions + energy*save/1000)
+  f <- ddply(f, .(sector, intervention), summarize, emissions=sum(savings))
+  
+  ## Then calculate the total change in electricity demand
+  elec <- subset(tmp, !is.element(intervention, c("LMS", "LCS", "carbon")) &
+                 fuel=="elec")
+  ## We can now sum the demand by region, fuel, year, and sector
+  elec <- ddply(elec, .(region, fuel, year, sector), summarize,
+                energy=sum(energy), LMS=unique(LMS), LCS=unique(LCS),
+                save=unique(save), LMS.emissions=sum(LMS.emissions),
+                LCS.emissions=sum(LCS.emissions))
+
+  ## Again, without the CIF improvements, the emissions saved would be LMS.emissions
+  ## But there is an extra saving
+  e <- transform(elec, savings=LMS.emissions + energy*save/1000)
+  e <- ddply(e, .(sector), summarize, emissions=sum(savings), intervention="carbon")
+  
+  ## And then finally the demand that is left gets scaled down.
+  tmp2 <- rbind(e, f)
+  tmp2 <- ddply(tmp2, .(sector), summarize, total=sum(emissions))
+
+  tmp3 <- rbind(lms, lcs)
+  tmp3 <- dcast(tmp3, sector ~ intervention, value.var="emissions")
+  tmp3 <- transform(tmp3, savings=LMS-LCS)
+
+  tmp4 <- merge(tmp2, tmp3)
+  tmp4 <- summarize(tmp4, sector=sector, emissions=savings-total)
+  extra <- transform(tmp4, intervention="extra")
+
+  ## Put everything together
+  l <- list(lms, e, f, extra, lcs)
+  final <- do.call("rbind", l)
+  final <- transform(final, emissions=ifelse(intervention %in% c("LMS", "LCS"),
+                              emissions, -emissions))
+
+  return(final)
+  
+}
+
+## Common factoring for interventions
+factor_interventions <- function(x) {
+  f <- factor(x,
+              levels=c("LMS", "space_heat", "gshp", "efficiency", "shifting", "carbon", "LCS"),
+              labels=c("LMS", "Space heating", "Ground-source\nheat pumps",
+                "Electrical\nefficiency", "Fuel\nswitching", "Fuel\ndecarbonization", "LCS"))
+  return(f)
+}

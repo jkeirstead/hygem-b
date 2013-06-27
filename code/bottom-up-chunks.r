@@ -87,9 +87,7 @@ sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
 results.split <- split_by_sector(results)
 tmp <- melt(results.split, id=c("year", "region", "fuel", "sector"))
 tmp <- ddply(tmp, .(year, variable, sector), summarize, sum=round(sum(value),3))
-tmp <- mutate(tmp, category=factor(variable,
-                     levels=c("LMS", "space_heat", "gshp", "efficiency", "shifting", "carbon", "LCS"),
-                     labels=c("LMS", "Space heating", "Ground HPs", "Electrical\nEfficiency", "Fuel switching", "Decarbonization", "LCS")),
+tmp <- mutate(tmp, category=factor_interventions(variable),
               value=ifelse(variable %in% c("LMS", "LCS"), sum, -sum))
 
 ## Make the plot
@@ -107,6 +105,21 @@ em <- dcast(cbind(em, dummy=1), dummy ~ scenario, value.var="emissions")
 sprintf("Total LMS emissions = %.2f Gt CO2", sum(em$LMS))
 sprintf("Total LCS emissions = %.2f Gt CO2", sum(em$LCS))
 
+## Try to do the waterfall plot
+em.waterfall <- calculate_emissions_detail(results.split)
+## Lump decarbon and extra into one
+df <- dcast(em.waterfall, sector ~ intervention, value.var="emissions")
+df <- transform(df, carbon=carbon+extra)
+df <- melt(df, id="sector", variable.name="intervention", value.var="value")
+df <- subset(df, intervention!="extra")
+
+tmp <- transform(df,
+                 category=factor_interventions(intervention))
+gg.em <- waterfall(tmp)
+print(gg.em +
+      theme_bw() +      
+      labs(x="", y="Emissions from global buildings sector (Gt CO2)"))
+
 ## @knitr emissions-table
 ## Prep a table with the results by region
 tmp2 <- ddply(emissions, .(region, scenario), summarize, total=sum(emissions))
@@ -116,5 +129,7 @@ tmp2.xt <- xtable(tmp2,
                   align="llcc",
                   digits=c(0,0,3,3),
                   caption="Summary of emissions by region under the Low Mitigation and Low Carbon 2050 scenarios")
-print(tmp2.xt, type="html")
+print(tmp2.xt, type="html",
+      html.table.attributes=getOption("xtable.html.table.attributes",
+                          "border=1 width=400"))
 
