@@ -45,3 +45,5 @@ Additionally there is an assumed change in the carbon intensity of the electrici
 
 ```{r emissions-calculation}
 ```
+```{r emissions-table, results='asis'}
+```

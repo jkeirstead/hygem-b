@@ -171,13 +171,13 @@ calculate_emissions <- function(df) {
               value.name="ef")
 
   ## Rearrange the energy demands to match
-  ## Note that all of the interventions should be allocated LMS emission factors
-  df2 <- melt(df, id=c("year", "region", "fuel"), variable.name="intervention",
+  ## This calculate only works for the LMS and LCS scenarios
+  df <- df[,c("region", "fuel", "year", "LMS", "LCS")]
+  df <- melt(df, id=c("year", "region", "fuel"), variable.name="scenario",
               value.name="energy")
-  df2 <- transform(df2, scenario=ifelse(intervention=="LCS", "LCS", "LMS"))
     
   ## Merge these with the energy demands
-  tmp <- merge(df2, efs)
+  tmp <- merge(df, efs)
 
   ## Calculate the emissions (in Gt CO2)
   tmp <- transform(tmp, emissions=energy*ef/1000)
@@ -194,6 +194,7 @@ split_by_sector <- function(df) {
   LMS.share <- load_sector_share_data()
 
   ## Calculate the change in demand in the electrical efficiency measure
+  fuel_data <- load_fuel_data()
   elec_data <- subset(fuel_data, fuel=="elec")
   elec_share <- load_electricity_share_data(elec_data)
   tmp <- ddply(elec_share, .(year), summarize,

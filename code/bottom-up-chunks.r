@@ -101,22 +101,20 @@ print(gg +
 
 ## @knitr emissions-calculation
 emissions <- calculate_emissions(results)
-sprintf("WARNING: The emissions calculation still needs some work")
 
-em <- subset(emissions, intervention %in% c("LMS", "LCS"))
-em <- ddply(em, .(intervention), summarize, emissions=sum(emissions))
-em <- dcast(cbind(em, dummy=1), dummy ~ intervention, value.var="emissions")
+em <- ddply(emissions, .(scenario), summarize, emissions=sum(emissions))
+em <- dcast(cbind(em, dummy=1), dummy ~ scenario, value.var="emissions")
 sprintf("Total LMS emissions = %.2f Gt CO2", sum(em$LMS))
 sprintf("Total LCS emissions = %.2f Gt CO2", sum(em$LCS))
 
-tmp <- ddply(emissions, .(year, intervention), summarize, emissions=sum(emissions))
-names(tmp) <- c("year", "category", "value")
-tmp <- transform(tmp, category=factor(category,
-                     levels=c("LMS", "space_heat", "gshp", "efficiency", "shifting", "carbon", "LCS"),
-                     labels=c("LMS", "Space heating", "Ground HPs", "Electrical\nEfficiency", "Fuel switching", "Decarbonization", "LCS")),
-                 value=ifelse(category %in% c("LMS", "LCS"), value, -value))
+## @knitr emissions-table
+## Prep a table with the results by region
+tmp2 <- ddply(emissions, .(region, scenario), summarize, total=sum(emissions))
+tmp2 <- dcast(tmp2, region ~ scenario, value.var="total")
+require(xtable)
+tmp2.xt <- xtable(tmp2,
+                  align="llcc",
+                  digits=c(0,0,3,3),
+                  caption="Summary of emissions by region under the Low Mitigation and Low Carbon 2050 scenarios")
+print(tmp2.xt, type="html")
 
-gg <- waterfall(tmp)
-print(gg +
-      theme_bw() +
-      labs(x="", y="Emissions from global buildings sector (Gt CO2)"))
