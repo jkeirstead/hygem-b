@@ -170,12 +170,14 @@ calculate_emissions <- function(df) {
   efs <- melt(efs, id=c("region", "fuel"), variable.name="scenario",
               value.name="ef")
 
-  ## Melt the energy demands to match
-  df <- melt(df, id=c("year", "region", "fuel"), variable.name="scenario",
-             value.name="energy")
-  
+  ## Rearrange the energy demands to match
+  ## Note that all of the interventions should be allocated LMS emission factors
+  df2 <- melt(df, id=c("year", "region", "fuel"), variable.name="intervention",
+              value.name="energy")
+  df2 <- transform(df2, scenario=ifelse(intervention=="LCS", "LCS", "LMS"))
+    
   ## Merge these with the energy demands
-  tmp <- merge(df, efs)
+  tmp <- merge(df2, efs)
 
   ## Calculate the emissions (in Gt CO2)
   tmp <- transform(tmp, emissions=energy*ef/1000)
@@ -193,11 +195,51 @@ make_waterfall_plot <- function(df) {
   df.m <- melt(df, id=c("region", "fuel", "year"))
   df.m <- ddply(df.m, .(year, variable), summarize, total=round(sum(value), 3))
 
+  ## Drop the LMS and LCS
+  test <- subset(df.m, !is.element(variable, c("LMS", "LCS")))
+  
+  ## Add in the residential/commercial splits
+  test <- transform(test, commercial=0, residential=1)
+  elec_data <- subset(fuel_data, fuel=="elec")
+  elec_share <- load_electricity_share_data(elec_data)
+  tmp <- ddply(elec_share, .(year), summarize,
+               comm=sum(elec_comm*comm_nonheatelec),
+               resi=sum(elec_resi*res_nonheatelec))
+  tmp.m <- melt(tmp, id="year")
+  tmp.m <- subset(tmp.m, year==2050)
+  tmp.m <- transform(tmp.m, value=value/sum(value))
+  elec.tmp <- dcast(tmp.m, year ~ variable, value.var="value")
+  test <- transform(test,
+                    commercial=ifelse(variable=="efficiency", elec.tmp$comm, commercial),
+                    residential=ifelse(variable=="efficiency", elec.tmp$resi, residential))
+
+  ## Calculate total savings by sector
+  test.m <- melt(test, id=c("year", "variable", "total"), variable.name="sector")
+  test <- dcast(test.m, year + variable ~ sector, value.var="value")
+  save <- ddply(test.m, .(sector), summarize, savings=sum(total*value), share=weighted.mean(value, total))
+
+  ## So these are the middle value
+  df2 <- merge(df.m, test)
+
+  ## Then the LMS value
+  sector_share <- load_sector_share_data()
+  df.lms <- cbind(subset(df.m, variable=="LMS"), sector_share)
+
+  ## Then the LCS value
+  lcs.comm <- with(df.lms, total*commercial) - subset(save, sector=="commercial")$savings
+  lcs.res <- with(df.lms, total*residential) - subset(save, sector=="residential")$savings  
+  df.lcs <- cbind(subset(df.m, variable=="LCS"), commercial=lcs.comm/(lcs.comm+lcs.res), residential=lcs.res/(lcs.comm + lcs.res))
+  
+  ## Put it all together
+  l <- list(df.lms, df2, df.lcs)
+  df.m <- do.call("rbind", l)
+
   min.total <- with(df.m, c(0, head(total, 1) - cumsum(tail(total, -1))))
   max.total <- with(df.m, c(head(total, 1), rev(head(cumsum(rev(total)), -1))))
 
   waterfall.df <- cbind(df.m, min=min.total, max=max.total)
-
+  
+  ## Tidy up the factors
   cats <- c("LMS", "Space heating", "GSHPs", "Elec efficiency",
             "Fuel switching", "Decarbonizing grid", "LCS")
   waterfall.df <- mutate(waterfall.df, variable=factor(variable,
@@ -205,10 +247,22 @@ make_waterfall_plot <- function(df) {
                                          lev=c("LMS", "space_heat", "gshp",
                                            "efficiency", "shifting",
                                            "carbon", "LCS")))
-     
+  
+
+  waterfall.m <- melt(waterfall.df, id=c("year", "variable", "total", "min", "max"), variable.name="sector")
+  waterfall.m <- mutate(waterfall.m, energy=total*value)
+
+  ## STOPPED HERE
+  ## The problem is that I have to correct the max and min values for
+  ## each sector, i.e. LMS resi = (min, 143), LMS comm = (143, max).
+  ## It might help to keep the connecting lines in a separate data frame
+  ## Also strip out the data frame manipulation from this method.
+  ## Should be able to pass it something like:
+  ## order, category, fill, value
+  ## Write this function first
   offset <- 0.3
   gg <- ggplot(waterfall.df) + 
-    geom_rect(aes(ymin=min, ymax=max,
+    geom_rect(aes(ymin=min, ymax=max, 
                   xmin=as.numeric(variable) - offset,
                   xmax=as.numeric(variable) + offset)) +
                     geom_segment(data=tail(waterfall.df, n=nrow(waterfall.df)-1),

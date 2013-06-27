@@ -76,20 +76,48 @@ interventions <- merge(merge(merge(merge(space_heat, heat_pumps), efficiency, al
 
 names(interventions) <- c("year", "region", "fuel",
                           "space_heat", "gshp", "efficiency", "shifting", "carbon")
+
 ## Calculate the summary
 results <- calculate_summary(fuel_data, interventions)
-if (nrow(subset(results, LCS<0))) {
-  tmp <- sum(subset(results, LCS<0)$LCS)
-  warning(sprintf("There is %.2f EJ of negative demand.  Converting this to 0.", tmp))
-  results <- transform(results, LCS=replace(LCS, LCS<0, 0))
-}
+## Note that because of aggregation in earlier calculations,
+## the per fuel totals are only estimates and only totals by
+## region and year should be used.
+
 sprintf("Total LMS demand = %.2f EJ", sum(results$LMS))
 sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
-gg <- make_waterfall_plot(results)
-print(gg + labs(y="Building energy demand (EJ)"))
+
+## Calculate shares by sector
+
+tmp <- melt(results, id=c("year", "region", "fuel"))
+tmp <- ddply(tmp, .(year, variable), summarize, sum=round(sum(value),3))
+tmp <- mutate(tmp, category=factor(variable,
+                     levels=c("LMS", "space_heat", "gshp", "efficiency", "shifting", "carbon", "LCS"),
+                     labels=c("LMS", "Space heating", "Ground HPs", "Electrical\nEfficiency", "Fuel switching", "Decarbonization", "LCS")),
+              value=ifelse(variable %in% c("LMS", "LCS"), sum, -sum))
+source("waterfall.r")
+gg <- waterfall(tmp)
+print(gg +
+      theme_bw() +      
+      labs(x="", y="Global building energy demand (EJ)"))
 
 ## @knitr emissions-calculation
 emissions <- calculate_emissions(results)
-em <- dcast(emissions, year + region + fuel ~ scenario, value.var="emissions")
+sprintf("WARNING: The emissions calculation still needs some work")
+
+em <- subset(emissions, intervention %in% c("LMS", "LCS"))
+em <- ddply(em, .(intervention), summarize, emissions=sum(emissions))
+em <- dcast(cbind(em, dummy=1), dummy ~ intervention, value.var="emissions")
 sprintf("Total LMS emissions = %.2f Gt CO2", sum(em$LMS))
 sprintf("Total LCS emissions = %.2f Gt CO2", sum(em$LCS))
+
+tmp <- ddply(emissions, .(year, intervention), summarize, emissions=sum(emissions))
+names(tmp) <- c("year", "category", "value")
+tmp <- transform(tmp, category=factor(category,
+                     levels=c("LMS", "space_heat", "gshp", "efficiency", "shifting", "carbon", "LCS"),
+                     labels=c("LMS", "Space heating", "Ground HPs", "Electrical\nEfficiency", "Fuel switching", "Decarbonization", "LCS")),
+                 value=ifelse(category %in% c("LMS", "LCS"), value, -value))
+
+gg <- waterfall(tmp)
+print(gg +
+      theme_bw() +
+      labs(x="", y="Emissions from global buildings sector (Gt CO2)"))
