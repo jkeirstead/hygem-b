@@ -23,9 +23,6 @@ names(resi.sh.data) <- c("region","year","pop","floorcap","hdd",
 ## Get estimates of residential ground source heat pumps
 gshp <- load_gshp_data()
 
-## Get the share of energy in the commercial and residential sectors
-sector_share <- load_sector_share_data()
-
 ## Determine the shares of electricity demand for residential and commercial.
 elec_data <- subset(fuel_data, fuel=="elec")
 elec_share <- load_electricity_share_data(elec_data)
@@ -87,13 +84,15 @@ sprintf("Total LMS demand = %.2f EJ", sum(results$LMS))
 sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
 
 ## Calculate shares by sector
-
-tmp <- melt(results, id=c("year", "region", "fuel"))
-tmp <- ddply(tmp, .(year, variable), summarize, sum=round(sum(value),3))
+results.split <- split_by_sector(results)
+tmp <- melt(results.split, id=c("year", "region", "fuel", "sector"))
+tmp <- ddply(tmp, .(year, variable, sector), summarize, sum=round(sum(value),3))
 tmp <- mutate(tmp, category=factor(variable,
                      levels=c("LMS", "space_heat", "gshp", "efficiency", "shifting", "carbon", "LCS"),
                      labels=c("LMS", "Space heating", "Ground HPs", "Electrical\nEfficiency", "Fuel switching", "Decarbonization", "LCS")),
               value=ifelse(variable %in% c("LMS", "LCS"), sum, -sum))
+
+## Make the plot
 source("waterfall.r")
 gg <- waterfall(tmp)
 print(gg +

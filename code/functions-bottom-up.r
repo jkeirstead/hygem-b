@@ -185,21 +185,15 @@ calculate_emissions <- function(df) {
   return(tmp)
 }
 
-## Create a waterfall plot
+## Splits final energy demands by commercial and domestic sectors
 ##
-## Creates a waterfall plot.  Assumes that the data is in a dataframe according to LMS - space_heat - gshp - efficiency - carbon - shifting = LCS
-## @return a ggplot object
-make_waterfall_plot <- function(df) {
+## @param df a dataframe containing the results by intervention
+split_by_sector <- function(df) {
 
-  ## First we want to do this globally so
-  df.m <- melt(df, id=c("region", "fuel", "year"))
-  df.m <- ddply(df.m, .(year, variable), summarize, total=round(sum(value), 3))
+  ## First tabulate the commercial and residential splits by intervention
+  LMS.share <- load_sector_share_data()
 
-  ## Drop the LMS and LCS
-  test <- subset(df.m, !is.element(variable, c("LMS", "LCS")))
-  
-  ## Add in the residential/commercial splits
-  test <- transform(test, commercial=0, residential=1)
+  ## Calculate the change in demand in the electrical efficiency measure
   elec_data <- subset(fuel_data, fuel=="elec")
   elec_share <- load_electricity_share_data(elec_data)
   tmp <- ddply(elec_share, .(year), summarize,
@@ -208,70 +202,42 @@ make_waterfall_plot <- function(df) {
   tmp.m <- melt(tmp, id="year")
   tmp.m <- subset(tmp.m, year==2050)
   tmp.m <- transform(tmp.m, value=value/sum(value))
-  elec.tmp <- dcast(tmp.m, year ~ variable, value.var="value")
-  test <- transform(test,
-                    commercial=ifelse(variable=="efficiency", elec.tmp$comm, commercial),
-                    residential=ifelse(variable=="efficiency", elec.tmp$resi, residential))
+  elec.share <- dcast(tmp.m, year ~ variable, value.var="value")
 
-  ## Calculate total savings by sector
-  test.m <- melt(test, id=c("year", "variable", "total"), variable.name="sector")
-  test <- dcast(test.m, year + variable ~ sector, value.var="value")
-  save <- ddply(test.m, .(sector), summarize, savings=sum(total*value), share=weighted.mean(value, total))
-
-  ## So these are the middle value
-  df2 <- merge(df.m, test)
-
-  ## Then the LMS value
-  sector_share <- load_sector_share_data()
-  df.lms <- cbind(subset(df.m, variable=="LMS"), sector_share)
-
-  ## Then the LCS value
-  lcs.comm <- with(df.lms, total*commercial) - subset(save, sector=="commercial")$savings
-  lcs.res <- with(df.lms, total*residential) - subset(save, sector=="residential")$savings  
-  df.lcs <- cbind(subset(df.m, variable=="LCS"), commercial=lcs.comm/(lcs.comm+lcs.res), residential=lcs.res/(lcs.comm + lcs.res))
+  ## Calculate the resulting LCS shares
+  init_splits <- data.frame(measure=c("LMS", "space_heat", "gshp", "efficiency",
+                              "shifting", "carbon", "LCS"),
+                            commercial=c(LMS.share$commercial, 0, 0, elec.share$comm, 0, 0, 1),
+                            residential=c(LMS.share$residential, 1, 1, elec.share$resi, 1, 1, 1))
   
-  ## Put it all together
-  l <- list(df.lms, df2, df.lcs)
-  df.m <- do.call("rbind", l)
+  tmp <- melt(df, id=c("year", "region", "fuel"), variable.name="measure")
+  tmp <- merge(tmp, init_splits)
+  tmp <- subset(tmp, !is.element(measure, c("LMS", "LCS")))
+  tmp.m <- melt(tmp, id=c("year", "region", "fuel", "measure", "value"),
+              variable.name="sector", value.name="share")
+  savings <- ddply(tmp.m, .(sector), summarize, ints=sum(value*share))
 
-  min.total <- with(df.m, c(0, head(total, 1) - cumsum(tail(total, -1))))
-  max.total <- with(df.m, c(head(total, 1), rev(head(cumsum(rev(total)), -1))))
+  ## Calculate LMS demands
+  LMS.demand <- data.frame(LMS=as.numeric(LMS.share*sum(df$LMS)),
+                           sector=names(LMS.share))
 
-  waterfall.df <- cbind(df.m, min=min.total, max=max.total)
+  tmp <- merge(LMS.demand, savings)
+  tmp <- transform(tmp, LCS=LMS-ints)
+  tmp <- transform(tmp, share=LCS/sum(LCS))
+
+  id <- which(init_splits$measure=="LCS")
+  splits <- init_splits
+  splits[id, 2:3] <- tmp$share
   
-  ## Tidy up the factors
-  cats <- c("LMS", "Space heating", "GSHPs", "Elec efficiency",
-            "Fuel switching", "Decarbonizing grid", "LCS")
-  waterfall.df <- mutate(waterfall.df, variable=factor(variable,
-                                         labels=cats,
-                                         lev=c("LMS", "space_heat", "gshp",
-                                           "efficiency", "shifting",
-                                           "carbon", "LCS")))
+  ## Then put it all together
+  df.m <- melt(df, id=c("region", "fuel", "year"),
+               variable.name="measure", value.name="energy")
+  tmp <- merge(df.m, splits)
+  tmp.m <- melt(tmp, id=c("measure", "region", "fuel", "year", "energy"),
+                variable.name="sector", value.name="share")
+  tmp.m <- transform(tmp.m, value=energy*share)
+
+  final <- dcast(tmp.m, region + fuel + year + sector ~ measure, value.var="value")
   
-
-  waterfall.m <- melt(waterfall.df, id=c("year", "variable", "total", "min", "max"), variable.name="sector")
-  waterfall.m <- mutate(waterfall.m, energy=total*value)
-
-  ## STOPPED HERE
-  ## The problem is that I have to correct the max and min values for
-  ## each sector, i.e. LMS resi = (min, 143), LMS comm = (143, max).
-  ## It might help to keep the connecting lines in a separate data frame
-  ## Also strip out the data frame manipulation from this method.
-  ## Should be able to pass it something like:
-  ## order, category, fill, value
-  ## Write this function first
-  offset <- 0.3
-  gg <- ggplot(waterfall.df) + 
-    geom_rect(aes(ymin=min, ymax=max, 
-                  xmin=as.numeric(variable) - offset,
-                  xmax=as.numeric(variable) + offset)) +
-                    geom_segment(data=tail(waterfall.df, n=nrow(waterfall.df)-1),
-                                 aes(x=as.numeric(variable) + offset - 1,
-                                     xend=as.numeric(variable) + 1 - offset - 1,
-                                     y=max,
-                                     yend=max), linetype="dashed") +
-                                       scale_x_continuous(breaks=1:length(cats), labels=cats) +
-                                         theme_bw() +
-                                           labs(x="", y="Value")
-  return(gg)
+  return(final)
 }

@@ -1,27 +1,30 @@
 ## Make a waterfall plot
-## @param df a dataframe with columns labelled category (an ordered factor, such that 1 + 2 + ... + n-1 = n), value
+## @param df a dataframe with columns labelled category (an ordered factor, such that 1 + 2 + ... + n-1 = n), value, and an additional sector column for a further split
 waterfall <- function(df) {
 
   df <- transform(df, order=as.numeric(category))
   df <- arrange(df, order)
-                  
-  ## Calculate the min and max for each category
-  cs <- cumsum(df$value)
-  min.value <- c(0, cs[-c(1, length(cs))], 0)
-  max.value <- c(cs[1], cs[1:(length(cs)-1)])
-  df <- cbind(df, min=min.value, max=max.value)
-  df <- ddply(df, .(category), transform, min=min(min, max), max=max(min, max))
+  ids <- which(df$order==max(df$order))
+  df$value[ids] <- -df$value[ids]
   
+  ## Calculate the cumulative sums
+  df <- ddply(df, .(order, category, sector, value), summarize, cs1=cumsum(value))
+  df <- mutate(df, cs2=cumsum(cs1))
+
+  ## Calculate the max and mins for each category and sector
+  df <- transform(df, min.val=c(0, head(cs2, -1)),
+                   max.val=c(head(cs2, -1), 0))
+  df <- ddply(df, .(order, category, sector, value), summarize, min=min(min.val, max.val), max=max(min.val, max.val))
+    
   ## Make the plot
   offset <- 0.3
   df <- mutate(df, offset=offset)
-  lines <- data.frame(x=rep(df$order, each=2),
-                      y=c(0, rep(head(cs, -1), each=2), tail(cs, 1)))
-  lines <- lines[-c(1, nrow(lines)), ]
 
-  ##  print(df)
-  ##  print(class(df$order))
-  ##  print(lines)
+  ## Create the lines data frame
+  cs <- cumsum(ddply(df, .(order), summarize, value=sum(value))$value)
+  lines <- data.frame(x=df$order,
+                      y=c(0, head(rep(cs, each=2), -2), 0))
+
   
   require(scales)
   gg <- ggplot() +
@@ -29,7 +32,7 @@ waterfall <- function(df) {
     geom_rect(data=df, aes(xmin=order - offset,
                   xmax=order + offset, 
                   ymin=min,
-                  ymax=max)) +
+                  ymax=max, fill=sector)) +
     scale_x_continuous(breaks=df$order, labels=df$category)
 
   return(gg)
