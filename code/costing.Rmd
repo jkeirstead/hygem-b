@@ -35,12 +35,11 @@ The only intervention with an explicit operating cost are the ground-source heat
 
 All of these interventions however, except for grid decarbonisation, incur changes in fuel consumption and this has cost implications.
 
-```{r fuel-costs}
+```{r space-heating-fuels}
 ```
 
-```{r space-heating-fuel}
+```{r gshp-fuels}
 ```
-
 
 ### Summary
 

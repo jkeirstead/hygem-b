@@ -1,0 +1,24 @@
+Fuel costs for heat pump calculations,,,
+"Costs are determined using projections from DECC Fossil Fuel price projections, IEA ETP 2012 and UCL-TIAM model assumptions",,,
+,,,
+region,scenario,fuel,cost
+OECD Europe,LMS,fossil,12.41981017
+OECD North America,LMS,fossil,11.41815387
+India,LMS,fossil,18.22504265
+China,LMS,fossil,12.13902977
+OECD Asia Oceania,LMS,fossil,13.46350816
+Sub-Saharan Africa,LMS,fossil,14.16637223
+Latin America,LMS,fossil,14.67750407
+MENA,LMS,fossil,11.55071245
+Eastern Europe,LMS,fossil,11.32412549
+Non-OECD Asia,LMS,fossil,13.48113154
+OECD Europe,LCS,elec,25.83945274
+OECD North America,LCS,elec,28.51985912
+India,LCS,elec,23.03205224
+China,LCS,elec,24.07853078
+OECD Asia Oceania,LCS,elec,21.3180441
+Sub-Saharan Africa,LCS,elec,22.47793703
+Latin America,LCS,elec,25.71420227
+MENA,LCS,elec,25.49150441
+Eastern Europe,LCS,elec,23.33005994
+Non-OECD Asia,LCS,elec,24.07879983
