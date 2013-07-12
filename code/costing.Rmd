@@ -11,15 +11,19 @@ read_chunk('costing-chunks.r')
 
 ### Capital costs
 
+#### Space heating 
 ```{r space-heat-costs, results='asis'}
 ```
 
+#### Heat pumps
 ```{r heat-pump-costs, results='asis'}
 ```
 
-```{r efficiency-costs}
+#### Electrical appliance and lighting efficiency
+```{r efficiency-costs, results='asis'}
 ```
 
+#### Other measures
 ```{r other-costs, results='asis'}
 ```
 
