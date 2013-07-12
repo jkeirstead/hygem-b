@@ -2,7 +2,7 @@
 
 ## @knitr space-heat-costs
 source('retrofit-optimization.r')
-space_costs <- calculate_retrofit_costs(TRUE)
+space_costs <- calculate_retrofit_costs()
 tmp <- transform(space_costs, capital=capital/1e9)
 names(tmp) <- c("Region", "Capital cost")
 tmp.xt <- xtable(tmp[,1:2],

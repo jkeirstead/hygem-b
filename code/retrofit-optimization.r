@@ -51,8 +51,8 @@ calculate_retrofit_costs <- function(debug=FALSE) {
                        demand=c(16.32, 9.65, 0.47, 2.26, 2.78, 1.44, 1.18, 13.7, 5.88, 1.72,
                          6.74, 4.24, 0.45, 0.81, 0.86, 1.37, 0.89, 3.73, 2.43, 0.56))
   } else {
-    ## TODO Load this in from the bottom-up model
-    stop("TODO bottom-up model results not yet available")
+    resi <- ddply(resi.sh.results, .(region), summarize, LMS=sum(LMS), LCS=sum(LCS))
+    resi <- melt(resi, id="region", variable.name="scenario", value.name="demand")
   }
 
   ## Assumptions Greater London Authority.
