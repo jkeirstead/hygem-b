@@ -44,6 +44,9 @@ All of these interventions however, except for grid decarbonisation, incur chang
 ```{r fuel-switch-costs}
 ```
 
+```{r efficiency-fuels}
+```
+
 ### Summary
 
 Total costs and per household costs

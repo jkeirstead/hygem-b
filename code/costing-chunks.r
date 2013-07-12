@@ -137,6 +137,13 @@ tmp2 <- dcast(tmp, region ~ scenario, value.var="total")
 tmp2 <- transform(tmp2, cost=LCS-LMS)
 transfer_fuels <- tmp2[,c("region", "cost")]
 
+## @knitr efficiency-fuels
+message('Note these results are calculated in the supplementary spreadsheet efficiency_costs.xlsx and hard-coded here for convenience.  Future versions will port this to R')
+eff_fuels <- data.frame(region=space_costs$region,
+                        cost=c(-13075229954, -16307591875, -9623777736,
+                          -16575673119, -15281020652, -23190595282,
+                          -10048852710, -32393345429, -17252313055, -14650561536))
+
 ## @knitr summary-something
 #regional_factors <- data.frame(region=regions$region,
 #                               capital=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 1, 0.9),
