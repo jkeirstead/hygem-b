@@ -1,0 +1,32 @@
+## Costing
+
+We can now calculate the associated capital and operational costs associated with these technology changes.
+
+```{r costing-config}
+## Read in the model components
+##
+## Each of these files contains named chunks which are then called below.
+read_chunk('costing-chunks.r')
+```
+
+### Capital costs
+
+```{r space-heat-costs, results='asis'}
+```
+
+```{r heat-pump-costs}
+```
+
+```{r efficiency-costs}
+```
+
+```{r other-costs}
+```
+
+### Operationing/fuel costs
+Nothing here yet
+
+### Summary
+
+Total costs and per household costs
+

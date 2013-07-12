@@ -31,6 +31,9 @@ source('functions-bottom-up-data.r')
 ```{r child-bottom-up, child='bottom-up.Rmd'}
 ```
 
+```{r child, child='costing.Rmd'}
+```
+
 ## More information
 
 For more information, please see our paper at [journal name](http://journal.com).
