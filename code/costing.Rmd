@@ -27,8 +27,12 @@ read_chunk('costing-chunks.r')
 ```{r other-costs, results='asis'}
 ```
 
-### Operationing/fuel costs
-Nothing here yet
+### Operationing and fuel costs
+The only intervention with an explicit operating cost are the ground-source heat pumps.
+
+```{r heat-pump-operating, results='asis'}
+```
+
 
 ### Summary
 

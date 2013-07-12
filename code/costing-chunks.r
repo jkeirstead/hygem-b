@@ -68,6 +68,33 @@ print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
                           "border=1 width=400"))
 
+## @knitr heat-pump-operating
+## From the bottom-up chunks, the basic penetration data is in gshp
+## Rearrange first
+tmp <- subset(gshp, year==2050)
+tmp <- transform(tmp, scenario=ifelse(scenario=="lowC", "LCS", "LMS"))
+## Calculate how many GSHPs are needed.
+tmp <- mutate(tmp, number=households*penetration)
+## Calculate the operating and maintenance costs
+## Rawlings and Sykulski 1999 Ground source heat pumps gives annual GSHP maintenance costs (commercial) = $1.72/m2
+## CIBSE presentation July 20, 2006 Viessmann UK, Heat supply per m2 (depends on soil type) = 25 W/m2
+tmp <- transform(tmp, opex=number*size*1000/25*1.72)
+
+tmp.mt <- dcast(tmp, year + region ~ scenario, value.var="opex")
+tmp.mt <- transform(tmp.mt, cost=LCS-LMS)
+gshp_op_costs <- tmp.mt[,c("region", "cost")]
+
+tmp <- transform(gshp_op_costs, cost=cost/1e9)
+names(tmp) <- c("Region", "Capital cost")
+tmp.xt <- xtable(tmp[,1:2],
+                 digits=c(0,0,2),
+                 align="llr",
+                 caption="Annual operating and maintenance costs of ground-source heat pumps (billion USD)")
+print(tmp.xt, include.rownames=FALSE,  type="html",
+      html.table.attributes=getOption("xtable.html.table.attributes",
+                          "border=1 width=400"))
+
+
 ## @knitr summary-something
 #regional_factors <- data.frame(region=regions$region,
 #                               capital=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 1, 0.9),
