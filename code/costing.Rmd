@@ -49,5 +49,8 @@ All of these interventions however, except for grid decarbonisation, incur chang
 
 ### Summary
 
-Total costs and per household costs
+Now to summarize these costs, both in total and by household.
+
+```{r cost-summary, results='asis', fig.width=14}
+```
 

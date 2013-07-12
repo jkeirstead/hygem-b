@@ -57,16 +57,7 @@ print(tmp.xt, include.rownames=FALSE,  type="html",
 
 
 ## @knitr other-costs
-other_costs <- data.frame(space_costs$region, fuel=0, grid=0, discount=0, years=0)
-tmp <- other_costs[,1:3]
-names(tmp) <- c("Region", "Fuel switching", "Grid decarbonization")
-tmp.xt <- xtable(tmp,
-                 digits=c(0,0,2, 2),
-                 align="llrr",
-                 caption="Capital cost of other energy-saving measures (billion USD)")
-print(tmp.xt, include.rownames=FALSE,  type="html",
-      html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+other_costs <- data.frame(region=space_costs$region, cost=0, discount=0, years=0)
 
 ## @knitr heat-pump-operating
 ## From the bottom-up chunks, the basic penetration data is in gshp
@@ -109,8 +100,8 @@ tmp <- merge(tmp, fuel_costs)
 ## Calculate the total cost and saving (converting between EJ and GJ)
 tmp2 <- transform(tmp, cost=energy*1e9*price)
 tmp2 <- dcast(tmp2, region ~ scenario, value.var="cost")
-tmp2 <- transform(tmp2, saving=LCS-LMS)
-space_fuels <- tmp2[,c("region", "saving")] ## in USD
+tmp2 <- transform(tmp2, cost=LCS-LMS)
+space_fuels <- tmp2[,c("region", "cost")] ## in USD
 
 ## @knitr gshp-fuels
 ## These costs are measured in $ per GJ
@@ -144,7 +135,86 @@ eff_fuels <- data.frame(region=space_costs$region,
                           -16575673119, -15281020652, -23190595282,
                           -10048852710, -32393345429, -17252313055, -14650561536))
 
-## @knitr summary-something
-#regional_factors <- data.frame(region=regions$region,
-#                               capital=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 1, 0.9),
-#                               operating=c(0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 1, 1, 1, 0.7))
+## @knitr cost-summary
+regional_factors <- data.frame(region=space_costs$region,
+                               capital=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 1, 0.9),
+                               operating=c(0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 1, 1, 1, 0.7))
+
+## Create a summary of the capital costs
+names(space_costs)[2] <- "cost"
+capex <- list(space=space_costs, gshp=gshp_costs, eff=eff_costs, switch=other_costs, grid=other_costs)
+capex <- ldply(capex, rbind)
+names(capex)[3] <- "capex"
+
+## Create a summary of the operating costs
+empty <- data.frame(region=gshp_op_costs$region, cost=0)
+opex <- list(space=empty, gshp=gshp_op_costs, eff=empty, switch=empty, grid=empty)
+opex <- ldply(opex, rbind)
+names(opex)[3] <- "opex"
+
+## Create a summary of the fuel costs
+fuelex <- list(space=space_fuels, gshp=gshp_fuels, eff=eff_fuels, switch=transfer_fuels, grid=empty)
+fuelex <- ldply(fuelex, rbind)
+names(fuelex)[3] <- "fuel"
+
+## Now merge these into a single data frame
+tmp <- merge(merge(capex, opex), fuelex)
+## Calculate the annuity factor and total cost
+tmp <- mutate(tmp, AF=discount/(1-((1+discount)**(-years))), annual_capex=capex*AF)
+tmp[is.na(tmp)] <- 0
+## Merge with regional factors
+tmp <- merge(tmp, regional_factors)
+
+## Calculate the totals and tidy
+totals <- summarize(tmp, intervention=.id, region=region, total=annual_capex*capital + (opex+fuel)*operating)
+totals <- transform(totals, intervention=factor(intervention, levels=c("space", "gshp", "eff", "switch", "grid"),
+                              labels=c("Space heating", "Heat pumps", "Electrical efficiency",
+                                "Fuel switching", "Grid decarbonization")))
+
+## Finally add in the household numbers
+hh <- read.csv("../data/gshp.csv")
+hh <- subset(hh, year==2050)
+hh <- hh[,c("region", "households")]
+
+## Calculate per household values
+totals <- merge(totals, hh)
+totals <- transform(totals, per_hh=total/households)
+
+## Now arrange this to match table 11
+per_hh <- ddply(totals, .(region), summarize, hh=sum(per_hh))
+per_hh <- merge(per_hh, hh)
+hh_total <- with(per_hh, weighted.mean(hh, households))
+
+tmp <- transform(totals, total=total/1e9)
+raw <- dcast(tmp, region ~ intervention, value.var="total")
+tmp <- apply(raw[,-1], 1, sum)
+raw <- cbind(raw, Total=tmp)
+
+cost_results <- merge(raw, per_hh[,-3])
+names(cost_results)[ncol(cost_results)] <- "Cost per hh"
+
+bottom <- cbind(region="Global total", as.data.frame(t(apply(cost_results[,-1], 2, sum))))
+## Correct with population weighted total
+bottom[length(bottom)] <- hh_total
+
+## Final results
+results <- rbind(cost_results, bottom)
+results <- results[, -which(names(results)=="Grid decarbonization")]
+
+## Present the table
+tmp.xt <- xtable(results,
+                 digits=c(0,0,2,2,2,2,2,2),
+                 align="llrrrrrr",
+                 caption="Summary of cost difference between 2050 LMS and LCS scenarios including annualized capital, operating, and fuel (billion USD).  Cost per household in USD per household.")
+print(tmp.xt, include.rownames=FALSE,  type="html",
+      html.table.attributes=getOption("xtable.html.table.attributes",
+                          "border=1 width=600"))
+
+
+gg <- ggplot(totals, aes(x=region, y=total/1e9)) +
+  geom_bar(aes(fill=intervention), stat="identity", position="dodge") +
+  geom_segment(data=raw, aes(x=as.numeric(region)-0.45, xend=as.numeric(region)+0.45, y=Total, yend=Total), size=1) +
+  theme_bw() +
+  labs(x="Region", y="Annualized cost difference (billion USD)") +
+  scale_fill_discrete(name="Intervention")
+print(gg)
