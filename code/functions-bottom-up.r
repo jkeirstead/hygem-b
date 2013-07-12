@@ -96,28 +96,9 @@ calculate_electrical_savings <- function(df) {
 ## @param df a dataframe giving the existing heat fuel mixes
 ## @return a dataframe giving the changes in demands after switching by region, year and fuel type (EJ)
 calculate_fuel_switching <- function(df) {
-  ## Label by fossil and nonfossil fuel type
-  df <- mutate(df, fuel_type=ifelse(fuel %in% c("coal", "gas", "oil"), "fossil",
-                     ifelse(fuel=="heat", "heat", "nonfossil")))
+
+  tmp3 <- intermediate_switch(df)
   
-  ## Calculate the relative transfers
-  ## Only transfer from fossil to non-fossil
-  tmp <- ddply(df, .(region, fuel, year, scenario), transform,
-               change=ifelse(fuel_type=="fossil", -1, 0)*displaced*heat)
-  
-  ## This amount now needs to be redistributed to each of the nonfossil sources
-  ## Assume the following redistribution weights
-  weights <- data.frame(fuel=c("biomass", "coal", "elec", "gas", "heat", "oil", "renew"),
-                        weight=c(0.2, 0, 0.6, 0, 0, 0, 0.2))
-  tmp <- merge(tmp, weights)
-
-  ## Then do the calculation
-  tmp2 <- ddply(tmp, .(region, year, scenario), transform, fossil_change=-sum(change))
-  tmp3 <- mutate(tmp2, change=ifelse(fuel_type=="nonfossil", weight*fossil_change, change))
-
-  ## Calculate the new amount of heat for each fuel type
-  tmp3 <- mutate(tmp3, new_heat=heat + change)
-
   ## Sanity check
   cat(sprintf("Original heat demand = %.2f EJ\n", sum(df$fit)))
   cat("Summary of change in fuel allocations:\n")
@@ -127,6 +108,34 @@ calculate_fuel_switching <- function(df) {
   result <- tmp3[,c("year", "scenario", "region", "fuel", "change")]
   return(result)
 }
+
+
+## A convenience function to help with fuel costing
+intermediate_switch <- function(df) {
+  ## Label by fossil and nonfossil fuel type
+  df <- mutate(df, fuel_type=ifelse(fuel %in% c("coal", "gas", "oil"), "fossil",
+                     ifelse(fuel=="heat", "heat", "nonfossil")))
+  
+  ## Calculate the relative transfers
+  ## Only transfer from fossil to non-fossil
+  tmp <- ddply(df, .(region, fuel, year, scenario), transform,
+               heat_displ=ifelse(fuel_type=="fossil", -1, 0)*displaced*heat)
+  
+  ## This amount now needs to be redistributed to each of the nonfossil sources
+  ## Assume the following redistribution weights
+  weights <- data.frame(fuel=c("biomass", "coal", "elec", "gas", "heat", "oil", "renew"),
+                        weight=c(0.2, 0, 0.6, 0, 0, 0, 0.2))
+  tmp <- merge(tmp, weights)
+
+  ## Then do the calculation
+  tmp2 <- ddply(tmp, .(region, year, scenario), transform, fossil_change=-sum(heat_displ))
+  tmp3 <- mutate(tmp2, change=ifelse(fuel_type=="nonfossil", weight*fossil_change, heat_displ))
+
+  ## Calculate the new amount of heat for each fuel type
+  tmp3 <- mutate(tmp3, new_heat=heat + change)
+
+  return(tmp3)
+}  
 
 ## Calculates a summary of the LMS and LCS scenarios
 ##

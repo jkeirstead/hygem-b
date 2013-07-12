@@ -125,6 +125,18 @@ tmp2 <- transform(tmp2, total=cost*1e9*energy)
 tmp2 <- dcast(tmp2, region ~ scenario, value.var="total")
 gshp_fuels <- summarize(tmp2, region=region, cost=(-LCS-LMS)/1e9)
 
+## @knitr fuel-switch-costs
+## These are fossil fuel costs measured in $ per GJ
+fuel_costs <- read.csv("../data/fuel-costs-switching.csv", skip=3)
+## Calculate the amount of fossil fuel switched
+tmp <- intermediate_switch(heat_fuel_data)
+tmp <- ddply(tmp, .(region), summarize, total_switched=-sum(heat_displ))
+tmp <- merge(tmp, fuel_costs)
+tmp <- transform(tmp, total=cost*total_switched*1e9)
+tmp2 <- dcast(tmp, region ~ scenario, value.var="total")
+tmp2 <- transform(tmp2, cost=LCS-LMS)
+transfer_fuels <- tmp2[,c("region", "cost")]
+
 ## @knitr summary-something
 #regional_factors <- data.frame(region=regions$region,
 #                               capital=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 1, 0.9),

@@ -1,0 +1,24 @@
+Fuel costs for fuel switching calculations,,
+"Costs are determined using projections from DECC Fossil Fuel price projections, IEA ETP 2012 and UCL-TIAM model assumptions",,
+,,
+region,scenario,cost
+OECD Europe,LMS,12.41981017
+OECD North America,LMS,11.41815387
+India,LMS,18.22504265
+China,LMS,12.13902977
+OECD Asia Oceania,LMS,13.46350816
+Sub-Saharan Africa,LMS,14.16637223
+Latin America,LMS,14.67750407
+MENA,LMS,11.55071245
+Eastern Europe,LMS,11.32412549
+Non-OECD Asia,LMS,13.48113154
+OECD Europe,LCS,17.10367164
+OECD North America,LCS,18.71191547
+India,LCS,15.41923134
+China,LCS,16.04711847
+OECD Asia Oceania,LCS,14.39082646
+Sub-Saharan Africa,LCS,15.08676222
+Latin America,LCS,17.02852136
+MENA,LCS,16.89490265
+Eastern Europe,LCS,15.59803596
+Non-OECD Asia,LCS,16.0472799
