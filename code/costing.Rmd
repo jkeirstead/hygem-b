@@ -14,13 +14,13 @@ read_chunk('costing-chunks.r')
 ```{r space-heat-costs, results='asis'}
 ```
 
-```{r heat-pump-costs}
+```{r heat-pump-costs, results='asis'}
 ```
 
 ```{r efficiency-costs}
 ```
 
-```{r other-costs}
+```{r other-costs, results='asis'}
 ```
 
 ### Operationing/fuel costs
