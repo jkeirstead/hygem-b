@@ -33,6 +33,14 @@ The only intervention with an explicit operating cost are the ground-source heat
 ```{r heat-pump-operating, results='asis'}
 ```
 
+All of these interventions however, except for grid decarbonisation, incur changes in fuel consumption and this has cost implications.
+
+```{r fuel-costs}
+```
+
+```{r space-heating-fuel}
+```
+
 
 ### Summary
 

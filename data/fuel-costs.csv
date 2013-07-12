@@ -1,0 +1,44 @@
+Fuel costs (in dollars per GJ),,,
+"Costs are determined using projections from DECC Fossil Fuel price projections, IEA ETP 2012 and UCL-TIAM model assumptions.",,,
+,,,
+region,scenario,price_scenario,price
+China,LMS,high_fossil,12.18771104
+Eastern Europe,LMS,high_fossil,13.96045562
+India,LMS,high_fossil,11.23703322
+Latin America,LMS,high_fossil,18.88222404
+MENA,LMS,high_fossil,14.4553689
+Non-OECD Asia,LMS,high_fossil,12.29022057
+OECD Asia Oceania,LMS,high_fossil,16.34309491
+OECD Europe,LMS,high_fossil,14.70180033
+OECD North America,LMS,high_fossil,14.05569216
+Sub-Saharan Africa,LMS,high_fossil,10.28105481
+China,LMS,low_fossil,10.08728331
+Eastern Europe,LMS,low_fossil,12.59716913
+India,LMS,low_fossil,10.17258423
+Latin America,LMS,low_fossil,16.65929501
+MENA,LMS,low_fossil,11.53467835
+Non-OECD Asia,LMS,low_fossil,11.01030896
+OECD Asia Oceania,LMS,low_fossil,13.12641117
+OECD Europe,LMS,low_fossil,12.60196294
+OECD North America,LMS,low_fossil,12.40027039
+Sub-Saharan Africa,LMS,low_fossil,9.674588673
+China,LCS,high_fossil,15.2415525
+Eastern Europe,LCS,high_fossil,16.52281643
+India,LCS,high_fossil,14.64969792
+Latin America,LCS,high_fossil,20.78798384
+MENA,LCS,high_fossil,14.8285384
+Non-OECD Asia,LCS,high_fossil,13.15522644
+OECD Asia Oceania,LCS,high_fossil,17.48944134
+OECD Europe,LCS,high_fossil,17.18947796
+OECD North America,LCS,high_fossil,21.21133083
+Sub-Saharan Africa,LCS,high_fossil,10.03390749
+China,LCS,low_fossil,12.95588465
+Eastern Europe,LCS,low_fossil,15.75585237
+India,LCS,low_fossil,13.32106321
+Latin America,LCS,low_fossil,20.1165063
+MENA,LCS,low_fossil,12.0029415
+Non-OECD Asia,LCS,low_fossil,12.10138229
+OECD Asia Oceania,LCS,low_fossil,14.48654262
+OECD Europe,LCS,low_fossil,14.91470925
+OECD North America,LCS,low_fossil,18.09454857
+Sub-Saharan Africa,LCS,low_fossil,9.577628712

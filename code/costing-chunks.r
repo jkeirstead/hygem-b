@@ -95,6 +95,23 @@ print(tmp.xt, include.rownames=FALSE,  type="html",
                           "border=1 width=400"))
 
 
+## @knitr fuel-costs
+## These costs are measured in $ per GJ
+fuel_costs <- read.csv("../data/fuel-costs.csv", skip=3)
+fuel_costs <- ddply(fuel_costs, .(region, scenario), summarize, price=mean(price))
+
+## @knitr space-heating-fuels
+## Total demands are given in resi.sh.results
+tmp <- ddply(resi.sh.results, .(region), summarize, LMS=sum(LMS), LCS=sum(LCS))
+tmp <- melt(tmp, id="region", variable.name="scenario", value.name="energy")
+tmp <- merge(tmp, fuel_costs)
+## Calculate the total cost and saving (converting between EJ and GJ)
+tmp2 <- transform(tmp, cost=energy*1e9*price)
+tmp2 <- dcast(tmp2, region ~ scenario, value.var="cost")
+tmp2 <- transform(tmp2, saving=LCS-LMS)
+space_fuels <- tmp2[,c("region", "saving")] ## in USD
+
+
 ## @knitr summary-something
 #regional_factors <- data.frame(region=regions$region,
 #                               capital=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 1, 1, 1, 0.9),
