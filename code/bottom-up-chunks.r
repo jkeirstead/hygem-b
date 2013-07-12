@@ -52,6 +52,21 @@ sprintf("Net savings = %.2f EJ", sum(gshp.model$gshp.energy))
 ## @knitr run-electrical-model
 elec.eff <- calculate_electrical_savings(elec_share)
 sprintf("Total savings from improved electrical appliance and lighting efficiency = %.2f EJ", sum(elec.eff$saving))
+message('Use the following table on the "R input" tab of the spreadsheet model')
+## Calculate the residential and commercial shares needed by the costing model
+tmp <- subset(elec_share, year==2050)
+tmp <- transform(tmp, region=region, residential=elec_resi*res_nonheatelec*eff + elec_resi*(1-res_nonheatelec),
+                 commercial=elec_comm*comm_nonheatelec*eff + elec_comm*(1-comm_nonheatelec))
+tmp <- summarize(tmp, region=region, residential=elec_resi-residential, commercial=elec_comm-commercial)
+require(xtable)
+tmp.xt <- xtable(tmp,
+                  align="llrr",
+                  digits=c(0,0,3,3),
+                  caption="Summary of electrical efficiency savings by region")
+print(tmp.xt, type="html", include.rownames=FALSE,
+      html.table.attributes=getOption("xtable.html.table.attributes",
+                          "border=1 width=400"))
+
 
 ## @knitr run-fuel-switch-model
 fuel_transfer <- calculate_fuel_switching(heat_fuel_data)
