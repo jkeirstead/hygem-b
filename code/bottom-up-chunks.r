@@ -62,7 +62,7 @@ require(xtable)
 tmp.xt <- xtable(tmp,
                   align="llrr",
                   digits=c(0,0,3,3),
-                  caption="Summary of electrical efficiency savings by region")
+                  caption="Summary of electrical efficiency savings by region (EJ)")
 print(tmp.xt, type="html", include.rownames=FALSE,
       html.table.attributes=getOption("xtable.html.table.attributes",
                           "border=1 width=400"))
