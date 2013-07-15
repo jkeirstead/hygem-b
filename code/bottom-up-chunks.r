@@ -227,9 +227,9 @@ tmp2 <- dcast(tmp2, region ~ scenario, value.var="total")
 require(xtable)
 tmp2.xt <- xtable(tmp2,
                   align="llcc",
-                  digits=c(0,0,3,3),
-                  caption="Summary of emissions by region under the Low Mitigation and Low Carbon 2050 scenarios")
-print(tmp2.xt, type="html",
+                  digits=c(0,0,2,2),
+                  caption="Greenhouse gas emissions by region in 2050 (Gt CO2). LMS = low mitigation scenario, LCS = low carbon scenario.")
+print(tmp2.xt, type="html", include.rownames=FALSE,
       html.table.attributes=getOption("xtable.html.table.attributes",
                           "border=1 width=400"))
-
+print(tmp2.xt, include.rownames=FALSE, file=file.path(outdir, "table-8-emissions-summary.tex"))
