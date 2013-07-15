@@ -99,6 +99,22 @@ tblOptions <- getOption("xtable.html.table.attributes",
 print(gshp.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
 print(gshp.tbl, file=file.path(outdir, "table-5-gshp-calcs.tex"), include.rownames=FALSE)
 
+## @knitr grid-decarbonization
+## Print a table of emissions figures
+efs <- read.csv("../data/emission-factors.csv")
+efs <- subset(efs, fuel=="elec")[,-2]
+efs.tbl <- xtable(efs,
+                   caption="Electricity emission factors by region and scenario (Mt CO2 per EJ).  LMS emission factors based upon Defra (2012) and LCS factors from a least-cost optimization model of the power sector (Shah et al, 2012). LMS = Low mitigation scenario, LCS = low carbon scenario.",
+                   align="llcc",
+                   digits=c(0,0,1,2),
+                   label="tbl:elec_emission-factors")
+
+## Print these out
+tblOptions <- getOption("xtable.html.table.attributes",
+                        "border=1 width=600")
+print(efs.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
+print(efs.tbl, file=file.path(outdir, "table-6-elec-emissions-factors.tex"), include.rownames=FALSE)
+
 ## @knitr run-electrical-model
 elec.eff <- calculate_electrical_savings(elec_share)
 sprintf("Total savings from improved electrical appliance and lighting efficiency = %.2f EJ", sum(elec.eff$saving))
