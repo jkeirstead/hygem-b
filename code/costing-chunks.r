@@ -211,6 +211,8 @@ print(tmp.xt, include.rownames=FALSE,  type="html",
                           "border=1 width=600"))
 print(tmp.xt, include.rownames=FALSE, file=file.path(outdir, "table-11-cost-summary.tex"))
 
+# Drop the grid decarbonization
+totals <- subset(totals, intervention!="Grid decarbonization")
 gg <- ggplot(totals, aes(x=region, y=total/1e9)) +
   geom_bar(aes(fill=intervention), stat="identity", position="dodge") +
   geom_segment(data=raw, aes(x=as.numeric(region)-0.45, xend=as.numeric(region)+0.45, y=Total, yend=Total), size=1) +
