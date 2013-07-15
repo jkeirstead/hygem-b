@@ -18,6 +18,9 @@ This model calculates demand for space heating in the residential based on emper
 ```{r run-space-heat-model}
 ```
 
+```{r space-heat-tables, results='asis'}
+```
+
 ### Ground source heat pumps
 ```{r run-gshp-model}
 ```

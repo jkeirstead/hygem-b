@@ -35,8 +35,32 @@ heat_fuel_data <- load_heat_fuel_data(fuel_data)
 ## by region and fuel.
 ## Start with the residential space heating model
 resi.sh.results <- calculate_residential_space_heat(resi.sh.data, fuel_data)
+
 sprintf("Global savings from improved residential space heating = %.2f EJ", sum(resi.sh.results$savings))
 with(resi.sh.results, sprintf("Equivalent to a %.1f%% saving on a 2050 LMS heating demand of %.2f EJ", 100*sum(savings)/sum(LMS), sum(LMS)))
+
+## @knitr space-heat-tables
+## Make some useful tables
+resi.in <- subset(resi.sh.data, year==2050)
+resi.in <- transform(resi.in, scenario=ifelse(scenario=="lowC", "LCS", "LMS"), pop=pop/1e6)
+resi.in <- transform(resi.in, scenario=factor(scenario, levels=c("LMS", "LCS")))
+resi.in <- dcast(resi.in, region + pop + floorcap + hdd + eff ~ scenario, value.var="intensity")
+resi.out <- resi.sh.results[,c("region", "fuel", "LMS", "LCS")]
+resi.out <- ddply(resi.out, .(region), summarize, LMS=sum(LMS), LCS=sum(LCS))
+resi.table.data <- merge(resi.in, resi.out, by="region")
+names(resi.table.data) <- c("Region", "P", "FA", "HDD", "Eff", "UE_LMS", "UE_LCS", "E_LMS", "E_LCS")
+
+resi.tbl <- xtable(resi.table.data,
+                   caption="Residential space heating calculation by region and scenario. P = population (billions), FA = floor area (m2/cap), HDD = heating degree days (deg C), Eff = space heating efficiency (%), UE = useful energy intensity (kJ/m2 HDD), E = energy demand (EJ). LMS = Low mitigation scenario, LCS = low carbon scenario.",
+                   align="llcccccccc",
+                   digits=c(0,0,2,1,0,1,0,0,1,1),
+                   label="tbl:space_heat_calcs")
+## Print these out
+tblOptions <- getOption("xtable.html.table.attributes",
+                        "border=1 width=600")
+
+print(resi.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
+print(resi.tbl, file=file.path(outdir, "table-4-space-heat-calcs.tex"), include.rownames=FALSE)
 
 ## @knitr run-gshp-model
 gshp.model <- calculate_GSHP_heat(gshp, fuel_data)
