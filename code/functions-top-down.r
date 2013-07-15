@@ -383,8 +383,12 @@ for 2050 including 95% confidence intervals.",
   ## Table 3
   ## ====================================
   ## Calculate the emissions
-  efs <- read.csv("../data/emission-factors.csv")
+  efs <- read.csv("../data/LCS_emission-factors.csv")[,1:3]
   names(efs) <- c("region", "fuel", "ef")
+  efs <- transform(efs, fuel=factor(fuel, levels=c("biomass", "coal", "elec", "gas", "heat", "oil", "renew",
+                                            "uranium", "other"),
+                          labels=c("Biomass", "Coal", "Electricity", "Gas", "Heat", "Oil", "Renewables",
+                            "Uranium", "Other")))
   tmp <- melt(F$pred, id=c("year", "region", "fuel"), variable="prediction", value.name="energy")
   tmp <- merge(tmp, efs)
   tmp <- mutate(tmp, emissions=ef*energy)

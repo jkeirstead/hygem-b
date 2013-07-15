@@ -1,71 +1,91 @@
 region,fuel,LMS,LCS
 China,biomass,12,9.6
-Eastern Europe,biomass,10.8,8.64
-India,biomass,12,9.6
-Latin America,biomass,10.8,8.64
-MENA,biomass,12,9.6
-Non-OECD Asia,biomass,12.8,9.6
-OECD Asia Oceania,biomass,10.8,8.64
-OECD Europe,biomass,10.8,8.64
-OECD North America,biomass,10.8,8.64
-Sub-Saharan Africa,biomass,14.4,11.52
 China,coal,94.6,94.6
-Eastern Europe,coal,94.6,94.6
-India,coal,94.6,94.6
-Latin America,coal,94.6,94.6
-MENA,coal,94.6,94.6
-Non-OECD Asia,coal,94.6,94.6
-OECD Asia Oceania,coal,94.6,94.6
-OECD Europe,coal,94.6,94.6
-OECD North America,coal,94.6,94.6
-Sub-Saharan Africa,coal,94.6,94.6
 China,elec,167.95725,43.1
-Eastern Europe,elec,73.05405556,9.17
-India,elec,172.5337222,24.3
-Latin America,elec,75.191,11.3
-MENA,elec,109.3753889,8.08
-Non-OECD Asia,elec,123.4926944,33.3
-OECD Asia Oceania,elec,111.2015833,22.5
-OECD Europe,elec,62.18886111,18.8
-OECD North America,elec,143.1456667,41.2
-Sub-Saharan Africa,elec,104.6830556,18.2
 China,gas,56.1,56.1
-Eastern Europe,gas,56.1,56.1
-India,gas,56.1,56.1
-Latin America,gas,56.1,56.1
-MENA,gas,56.1,56.1
-Non-OECD Asia,gas,56.1,56.1
-OECD Asia Oceania,gas,56.1,56.1
-OECD Europe,gas,56.1,56.1
-OECD North America,gas,56.1,56.1
-Sub-Saharan Africa,gas,56.1,56.1
 China,heat,0,0
-Eastern Europe,heat,0,0
-India,heat,0,0
-Latin America,heat,0,0
-MENA,heat,0,0
-Non-OECD Asia,heat,0,0
-OECD Asia Oceania,heat,0,0
-OECD Europe,heat,0,0
-OECD North America,heat,0,0
-Sub-Saharan Africa,heat,0,0
 China,oil,77.4,77.4
-Eastern Europe,oil,77.4,77.4
-India,oil,77.4,77.4
-Latin America,oil,77.4,77.4
-MENA,oil,77.4,77.4
-Non-OECD Asia,oil,77.4,77.4
-OECD Asia Oceania,oil,77.4,77.4
-OECD Europe,oil,77.4,77.4
-OECD North America,oil,77.4,77.4
-Sub-Saharan Africa,oil,77.4,77.4
 China,renew,0,0
+China,uranium,1.94,1.94
+China,other,77.4,77.4
+Eastern Europe,biomass,10.8,8.64
+Eastern Europe,coal,94.6,94.6
+Eastern Europe,elec,73.05405556,9.17
+Eastern Europe,gas,56.1,56.1
+Eastern Europe,heat,0,0
+Eastern Europe,oil,77.4,77.4
 Eastern Europe,renew,0,0
+Eastern Europe,uranium,1.94,1.94
+Eastern Europe,other,77.4,77.4
+India,biomass,12,9.6
+India,coal,94.6,94.6
+India,elec,172.5337222,24.3
+India,gas,56.1,56.1
+India,heat,0,0
+India,oil,77.4,77.4
 India,renew,0,0
+India,uranium,1.94,1.94
+India,other,77.4,77.4
+Latin America,biomass,10.8,8.64
+Latin America,coal,94.6,94.6
+Latin America,elec,75.191,11.3
+Latin America,gas,56.1,56.1
+Latin America,heat,0,0
+Latin America,oil,77.4,77.4
 Latin America,renew,0,0
+Latin America,uranium,1.94,1.94
+Latin America,other,77.4,77.4
+MENA,biomass,12,9.6
+MENA,coal,94.6,94.6
+MENA,elec,109.3753889,8.08
+MENA,gas,56.1,56.1
+MENA,heat,0,0
+MENA,oil,77.4,77.4
 MENA,renew,0,0
+MENA,uranium,1.94,1.94
+MENA,other,77.4,77.4
+Non-OECD Asia,biomass,12.8,9.6
+Non-OECD Asia,coal,94.6,94.6
+Non-OECD Asia,elec,123.4926944,33.3
+Non-OECD Asia,gas,56.1,56.1
+Non-OECD Asia,heat,0,0
+Non-OECD Asia,oil,77.4,77.4
 Non-OECD Asia,renew,0,0
+Non-OECD Asia,uranium,1.94,1.94
+Non-OECD Asia,other,77.4,77.4
+OECD Asia Oceania,biomass,10.8,8.64
+OECD Asia Oceania,coal,94.6,94.6
+OECD Asia Oceania,elec,111.2015833,22.5
+OECD Asia Oceania,gas,56.1,56.1
+OECD Asia Oceania,heat,0,0
+OECD Asia Oceania,oil,77.4,77.4
 OECD Asia Oceania,renew,0,0
+OECD Asia Oceania,uranium,1.94,1.94
+OECD Asia Oceania,other,77.4,77.4
+OECD Europe,biomass,10.8,8.64
+OECD Europe,coal,94.6,94.6
+OECD Europe,elec,62.18886111,18.8
+OECD Europe,gas,56.1,56.1
+OECD Europe,heat,0,0
+OECD Europe,oil,77.4,77.4
 OECD Europe,renew,0,0
+OECD Europe,uranium,1.94,1.94
+OECD Europe,other,77.4,77.4
+OECD North America,biomass,10.8,8.64
+OECD North America,coal,94.6,94.6
+OECD North America,elec,143.1456667,41.2
+OECD North America,gas,56.1,56.1
+OECD North America,heat,0,0
+OECD North America,oil,77.4,77.4
 OECD North America,renew,0,0
+OECD North America,uranium,1.94,1.94
+OECD North America,other,77.4,77.4
+Sub-Saharan Africa,biomass,14.4,11.52
+Sub-Saharan Africa,coal,94.6,94.6
+Sub-Saharan Africa,elec,104.6830556,18.2
+Sub-Saharan Africa,gas,56.1,56.1
+Sub-Saharan Africa,heat,0,0
+Sub-Saharan Africa,oil,77.4,77.4
 Sub-Saharan Africa,renew,0,0
+Sub-Saharan Africa,uranium,1.94,1.94
+Sub-Saharan Africa,other,77.4,77.4
