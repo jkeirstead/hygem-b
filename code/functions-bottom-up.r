@@ -48,6 +48,7 @@ calculate_GSHP_heat <- function(df, fuel) {
 
   ## Calculate the saving in each region
   tmp <- transform(tmp, scenario=ifelse(scenario=="", "LMS", "lowC"))
+  full <- tmp
   tmp <- tmp[,c("year", "scenario", "region", "energy", "elec")]
   tmp.m <- melt(tmp, id=c("year", "scenario", "region"))
   savings <- ddply(tmp.m, .(year, region, variable), function(df) {
@@ -68,7 +69,7 @@ calculate_GSHP_heat <- function(df, fuel) {
   tmp2 <- tmp2[,c("year", "region", "fuel", "gshp.energy")]
 
   ## Return the result
-  return(tmp2)
+  return(list(savings=tmp2, energy=full))
 }
   
 ## Calculates the savings from increased electricity efficiency

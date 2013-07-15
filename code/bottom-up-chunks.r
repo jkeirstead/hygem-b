@@ -58,15 +58,46 @@ resi.tbl <- xtable(resi.table.data,
 ## Print these out
 tblOptions <- getOption("xtable.html.table.attributes",
                         "border=1 width=600")
-
 print(resi.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
 print(resi.tbl, file=file.path(outdir, "table-4-space-heat-calcs.tex"), include.rownames=FALSE)
 
 ## @knitr run-gshp-model
-gshp.model <- calculate_GSHP_heat(gshp, fuel_data)
+gshp.list <- calculate_GSHP_heat(gshp, fuel_data)
+gshp.model <- gshp.list$savings
 sprintf("Increased GSHP use = %.2f EJ less fossil fuel demand", sum(subset(gshp.model, fuel!="elec")$gshp.energy))
 sprintf("Increased GSHP use = %.2f EJ more electricity demand", -sum(subset(gshp.model, fuel=="elec")$gshp.energy))
 sprintf("Net savings = %.2f EJ", sum(gshp.model$gshp.energy))
+
+## @knitr gshp-tables
+## Make a tidy version of the main parameters
+gshp.in <- subset(gshp, year==2050)
+gshp.in <- transform(gshp.in, scenario=ifelse(scenario=="lowC", "LCS", "LMS"), households=households/1e6)
+gshp.in <- transform(gshp.in, scenario=factor(scenario, levels=c("LMS", "LCS")), penetration=penetration*100)
+gshp.in <- dcast(gshp.in, region + households ~ scenario, value.var="penetration")
+CF <- unique(gshp$cap.factor)
+COP <- unique(gshp$COP)
+size <- unique(gshp$size)
+
+gshp.out <- gshp.list$energy[,c("region", "scenario", "energy", "elec")]
+gshp.out <- transform(gshp.out, elec=-elec, scenario=ifelse(scenario=="lowC", "LCS", "LMS"))
+gshp.out <- transform(gshp.out, scenario=factor(scenario, levels=c("LMS", "LCS")))
+gshp.out.energy <- dcast(gshp.out, region ~ scenario, value.var="energy")
+gshp.out.elec <- dcast(gshp.out, region ~ scenario, value.var="elec")
+gshp.out <- merge(gshp.out.energy, gshp.out.elec, by="region")
+
+gshp.table.data <- merge(gshp.in, gshp.out, by="region")
+names(gshp.table.data) <- c("Region", "Households", "Penetration_LMS", "Penetration_LCS", "Heat_out_LMS", "Heat_out_LCS", "Elec_in_LMS", "Elec_in_LCS")
+gshp.tbl <- xtable(gshp.table.data,
+                   caption=sprintf("Residential ground source heat pump (GSHP) calculation by region and scenario. phi = penetration rate. For all regions, heat pumps are assumed to be %d kW, with a capacity factor of %d and a COP of %.1f. LMS = Low mitigation scenario, LCS = low carbon scenario.", size, CF*100, COP),
+                   align="llccccccc",
+                   digits=c(0,0,0,1,1,3,3,3,3),
+                   label="tbl:GSHP_calcs")
+
+## Print these out
+tblOptions <- getOption("xtable.html.table.attributes",
+                        "border=1 width=800")
+print(gshp.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
+print(gshp.tbl, file=file.path(outdir, "table-5-gshp-calcs.tex"), include.rownames=FALSE)
 
 ## @knitr run-electrical-model
 elec.eff <- calculate_electrical_savings(elec_share)
