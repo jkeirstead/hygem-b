@@ -133,7 +133,6 @@ print(tmp.xt, type="html", include.rownames=FALSE,
       html.table.attributes=getOption("xtable.html.table.attributes",
                           "border=1 width=400"))
 
-
 ## @knitr run-fuel-switch-model
 fuel_transfer <- calculate_fuel_switching(heat_fuel_data)
 sprintf("Total savings from fuel switching = %.2f EJ", sum(fuel_transfer$change))
@@ -177,6 +176,26 @@ gg <- waterfall(tmp)
 print(gg +
       theme_bw() +      
       labs(x="", y="Global building energy demand (EJ)"))
+
+## @knitr energy-summary-table
+tmp <- results[,-which(names(results)=="year")]
+tmp <- melt(tmp, id=c("region", "fuel"))
+tmp <- ddply(tmp, .(region, variable), summarize, value=sum(value))
+tmp <- dcast(tmp, region ~ variable, value.var="value")
+tmp <- tmp[,-which(names(tmp)=="carbon")]
+names(tmp) <- c("Region", "LMS", "Space heating", "GSHPs", "Elec efficiency", "Fuel switching", "LCS")
+
+## Make the table
+summary.tbl <- xtable(tmp,
+                      caption="Building energy consumption in 2050 by region (EJ), showing the interventions that reduced demand between the low mitigation scenario (LMS) and the low carbon scenario (LCS)",
+                      align="llcccccc",
+                      digits=c(0,0,rep(1,6)))
+## For some reason adding a label to this table messes up the HTML formatting.
+
+tblOptions <- getOption("xtable.html.table.attributes", "border=1 width=600")
+print(summary.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
+print(summary.tbl, file=file.path(outdir, "table-7-summary-energy.tex"), include.rownames=FALSE)
+
 
 ## @knitr emissions-calculation
 emissions <- calculate_emissions(results)
