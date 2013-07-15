@@ -176,7 +176,7 @@ calculate_summary <- function(fuel, savings) {
 calculate_emissions <- function(df) {
 
   ## Load the emission factors and melt by scenario
-  efs <- read.csv("../data/LCS_emission-factors.csv")
+  efs <- read.csv("../data/emission-factors.csv")
   efs <- melt(efs, id=c("region", "fuel"), variable.name="scenario",
               value.name="ef")
 
@@ -265,7 +265,7 @@ split_by_sector <- function(df) {
 calculate_emissions_detail <- function(df) {
 
   ## Load the emission factors and melt by scenario
-  efs <- read.csv("../data/LCS_emission-factors.csv")
+  efs <- read.csv("../data/emission-factors.csv")
   efs.save <- transform(efs, save=LMS-LCS)
   efs <- melt(efs, id=c("region", "fuel"), variable.name="scenario",
               value.name="ef")
