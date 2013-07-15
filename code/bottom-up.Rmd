@@ -12,9 +12,6 @@ read_chunk('bottom-up-chunks.r')
 ```{r load-bottom-up-data}
 ```
 
-```{r init-models}
-```
-
 ### Residential space heat model
 
 This model calculates demand for space heating in the residential based on emperically-observed relationships.  It therefore gives the percentage of residential energy demand for heat as a validation metric.

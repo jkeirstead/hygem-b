@@ -361,7 +361,8 @@ show_top_down_results <- function(models) {
                  caption="Summary of global building energy demand prediction (in EJ, with 95% confidence intervals)",
                  align="llr")
   print(tbl1, include.rownames=FALSE, type='html', html.table.attributes=tblOptions)
-
+  print(tbl1, file=file.path(outdir, "table-1-global-summary.tex"), include.rownames=FALSE)
+  
   ## Table 2
   ## ====================================
   R.region <- ddply(R$pred, .(region), predict_to_string)
@@ -375,6 +376,7 @@ show_top_down_results <- function(models) {
 for 2050 including 95% confidence intervals.",
                  align="llrr")
   print(tbl2, include.rownames=FALSE, type='html', html.table.attributes=tblOptions)
+  print(tbl2, file=file.path(outdir, "table-2-regional-summary.tex"), include.rownames=FALSE)
   
   ## Table 3
   ## ====================================
@@ -406,5 +408,5 @@ for 2050 including 95% confidence intervals.",
 total and reference value).",
                  align="llr")
   print(tbl3, include.rownames=FALSE, type='html', html.table.attributes=tblOptions)
-  
+  print(tbl3, file=file.path(outdir, "table-3-emissions.tex"), include.rownames=FALSE)
 }

@@ -3,6 +3,7 @@
 ```{r initialize, echo=FALSE}
 ## Knitr configuration options
 opts_chunk$set(echo=FALSE, dev=c('png', 'pdf'))
+
 ```
 
 ## Model configuration
@@ -28,10 +29,10 @@ source('functions-bottom-up-data.r')
 ```{r child-top-down, child='top-down.Rmd', eval=run_top_down}
 ```
 
-```{r child-bottom-up, child='bottom-up.Rmd'}
+```{r child-bottom-up, child='bottom-up.Rmd', eval=FALSE}
 ```
 
-```{r child, child='costing.Rmd'}
+```{r child, child='costing.Rmd', eval=FALSE}
 ```
 
 ## More information

@@ -30,11 +30,6 @@ elec_share <- load_electricity_share_data(elec_data)
 ## Finally get space and water heating fuel transfer data
 heat_fuel_data <- load_heat_fuel_data(fuel_data)
 
-## @knitr init-models
-## Make sure the output directory exists
-outdir <- "../output"
-if (!file.exists(outdir)) dir.create(outdir)
-
 ## @knitr run-space-heat-model
 ## Each of these models calculates the change in energy consumption
 ## by region and fuel.
