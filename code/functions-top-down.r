@@ -359,7 +359,8 @@ show_top_down_results <- function(models) {
                      184))
   tbl1 <- xtable(df,
                  caption="Summary of global building energy demand prediction (in EJ, with 95% confidence intervals)",
-                 align="llr")
+                 align="llr",
+                 label="tbl:overall-global-summary")
   print(tbl1, include.rownames=FALSE, type='html', html.table.attributes=tblOptions)
   print(tbl1, file=file.path(outdir, "table-1-global-summary.tex"), include.rownames=FALSE)
   
@@ -374,7 +375,8 @@ show_top_down_results <- function(models) {
   tbl2 <- xtable(regions,
                  caption="Summary of regional building energy predictions. Values are central estimates
 for 2050 including 95% confidence intervals.",
-                 align="llrr")
+                 align="llrr",
+                 label="tbl:overall-regional-summary")
   print(tbl2, include.rownames=FALSE, type='html', html.table.attributes=tblOptions)
   print(tbl2, file=file.path(outdir, "table-2-regional-summary.tex"), include.rownames=FALSE)
   
@@ -406,7 +408,8 @@ for 2050 including 95% confidence intervals.",
   tbl3 <- xtable(tbl3.data,
                  caption="Predicted 2050 emissions from the buildings sector (by region and with global
 total and reference value).",
-                 align="llr")
+                 align="llr",
+                 label="tbl:emissions-summary")
   print(tbl3, include.rownames=FALSE, type='html', html.table.attributes=tblOptions)
   print(tbl3, file=file.path(outdir, "table-3-emissions.tex"), include.rownames=FALSE)
 }

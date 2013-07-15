@@ -1,6 +1,10 @@
 ## General functions
 ## ----------------------------------------
 
+## Make sure the output directory exists
+outdir <- "../output"
+if (!file.exists(outdir)) dir.create(outdir)
+
 ## Defines the regions for later analysis.
 
 ## This functions retrieves a sample data set from the World Bank data
