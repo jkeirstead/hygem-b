@@ -2,7 +2,7 @@
 
 ## @knitr space-heat-costs
 source('retrofit-optimization.r')
-space_costs <- calculate_retrofit_costs()
+space_costs <- calculate_retrofit_costs(resi.sh.results)
 tmp <- transform(space_costs, capital=capital/1e9)
 names(tmp) <- c("Region", "Capital cost")
 tmp.xt <- xtable(tmp[,1:2],
@@ -76,7 +76,7 @@ tmp.mt <- transform(tmp.mt, cost=LCS-LMS)
 gshp_op_costs <- tmp.mt[,c("region", "cost")]
 
 tmp <- transform(gshp_op_costs, cost=cost/1e9)
-names(tmp) <- c("Region", "Capital cost")
+names(tmp) <- c("Region", "Operating cost")
 tmp.xt <- xtable(tmp[,1:2],
                  digits=c(0,0,2),
                  align="llr",
@@ -203,18 +203,20 @@ results <- results[, -which(names(results)=="Grid decarbonization")]
 
 ## Present the table
 tmp.xt <- xtable(results,
-                 digits=c(0,0,2,2,2,2,2,2),
+                 digits=c(0,0,1,1,1,1,1,1),
                  align="llrrrrrr",
-                 caption="Summary of cost difference between 2050 LMS and LCS scenarios including annualized capital, operating, and fuel (billion USD).  Cost per household in USD per household.")
+                 caption="Summary of cost difference between 2050 LMS and LCS scenarios including annualized capital, operating, and fuel (billion 2010 USD).  Cost per household in 2010 USD per household.")
 print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
                           "border=1 width=600"))
-
+print(tmp.xt, include.rownames=FALSE, file=file.path(outdir, "table-11-cost-summary.tex"))
 
 gg <- ggplot(totals, aes(x=region, y=total/1e9)) +
   geom_bar(aes(fill=intervention), stat="identity", position="dodge") +
   geom_segment(data=raw, aes(x=as.numeric(region)-0.45, xend=as.numeric(region)+0.45, y=Total, yend=Total), size=1) +
   theme_bw() +
-  labs(x="Region", y="Annualized cost difference (billion USD)") +
-  scale_fill_discrete(name="Intervention")
+  labs(x="Region", y="Annualized cost difference (billion 2010 USD)") +
+  scale_fill_grey(name="Intervention") +
+  coord_flip() 
+  
 print(gg)

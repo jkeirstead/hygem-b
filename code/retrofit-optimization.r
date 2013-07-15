@@ -3,8 +3,9 @@
 
 ## Calculates the space heating retrofit costs using an optimization model
 ##
+## @param space_heat a data frame with the results of the space heat model
 ## @param debug   If TRUE, will use demands from earlier GAMS model implementation
-calculate_retrofit_costs <- function(debug=FALSE) {
+calculate_retrofit_costs <- function(space_heat, debug=FALSE) {
   
   ## First define the sets
   regions <- c("China", "Eastern Europe", "India", "Latin America",
@@ -45,13 +46,13 @@ calculate_retrofit_costs <- function(debug=FALSE) {
   seconds_per_day <- 24*60*60
 
   ## Residential space heating demand (in EJ)
-  if (debug) {
+  if (debug | missing(space_heat)) {
     resi <- data.frame(region=rep(regions$region, 2), 
                        scenario=rep(scenario, each=length(regions$region)),
                        demand=c(16.32, 9.65, 0.47, 2.26, 2.78, 1.44, 1.18, 13.7, 5.88, 1.72,
                          6.74, 4.24, 0.45, 0.81, 0.86, 1.37, 0.89, 3.73, 2.43, 0.56))
   } else {
-    resi <- ddply(resi.sh.results, .(region), summarize, LMS=sum(LMS), LCS=sum(LCS))
+    resi <- ddply(space_heat, .(region), summarize, LMS=sum(LMS), LCS=sum(LCS))
     resi <- melt(resi, id="region", variable.name="scenario", value.name="demand")
   }
 

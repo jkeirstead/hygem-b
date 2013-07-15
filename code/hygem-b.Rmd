@@ -32,7 +32,7 @@ if (run_top_down) {
 ```{r child-bottom-up, child='bottom-up.Rmd'}
 ```
 
-```{r child, child='costing.Rmd', eval=FALSE}
+```{r child, child='costing.Rmd'}
 ```
 
 ## More information

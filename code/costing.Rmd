@@ -23,17 +23,15 @@ read_chunk('costing-chunks.r')
 ```{r efficiency-costs, results='asis'}
 ```
 
-#### Other measures
 ```{r other-costs, results='asis'}
 ```
 
 ### Operating and fuel costs
-The only intervention with an explicit operating cost are the ground-source heat pumps.
+The only intervention with an explicit operating cost are the ground-source heat pumps. All of these interventions however, except for grid decarbonisation, incur changes in fuel consumption and this has cost implications.
+
 
 ```{r heat-pump-operating, results='asis'}
 ```
-
-All of these interventions however, except for grid decarbonisation, incur changes in fuel consumption and this has cost implications.
 
 ```{r space-heating-fuels}
 ```
@@ -44,6 +42,7 @@ All of these interventions however, except for grid decarbonisation, incur chang
 ```{r fuel-switch-costs}
 ```
 
+#### Electrical appliance and lighting efficiency
 ```{r efficiency-fuels}
 ```
 
@@ -51,6 +50,6 @@ All of these interventions however, except for grid decarbonisation, incur chang
 
 Now to summarize these costs, both in total and by household.
 
-```{r cost-summary, results='asis', fig.width=14}
+```{r cost-summary, results='asis', fig.width=10}
 ```
 
