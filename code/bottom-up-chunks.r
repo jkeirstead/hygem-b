@@ -166,6 +166,8 @@ sprintf("Total LCS demand = %.2f EJ", sum(results$LCS))
 ## Calculate shares by sector
 results.split <- split_by_sector(results)
 tmp <- melt(results.split, id=c("year", "region", "fuel", "sector"))
+tmp <- transform(tmp, sector=factor(sector, levels=c("commercial", "residential"),
+                        labels=c("Commercial", "Residential")))
 tmp <- ddply(tmp, .(year, variable, sector), summarize, sum=round(sum(value),3))
 tmp <- mutate(tmp, category=factor_interventions(variable),
               value=ifelse(variable %in% c("LMS", "LCS"), sum, -sum))
@@ -174,7 +176,8 @@ tmp <- mutate(tmp, category=factor_interventions(variable),
 source("waterfall.r")
 gg <- waterfall(tmp)
 print(gg +
-      theme_bw() +      
+      theme_bw() +
+      scale_fill_grey(name="Sector") + 
       labs(x="", y="Global building energy demand (EJ)"))
 
 ## @knitr energy-summary-table
@@ -209,6 +212,8 @@ sprintf("Total LCS emissions = %.2f Gt CO2", sum(em$LCS))
 em.waterfall <- calculate_emissions_detail(results.split)
 ## Lump decarbon and extra into one
 df <- dcast(em.waterfall, sector ~ intervention, value.var="emissions")
+df <- transform(df, sector=factor(sector, levels=c("commercial", "residential"),
+                        labels=c("Commercial", "Residential")))
 df <- transform(df, carbon=carbon+extra)
 df <- melt(df, id="sector", variable.name="intervention", value.var="value")
 df <- subset(df, intervention!="extra")
@@ -217,7 +222,8 @@ tmp <- transform(df,
                  category=factor_interventions(intervention))
 gg.em <- waterfall(tmp)
 print(gg.em +
-      theme_bw() +      
+      theme_bw() +
+      scale_fill_grey(name="Sector") + 
       labs(x="", y="Emissions from global buildings sector (Gt CO2)"))
 
 ## @knitr emissions-table
