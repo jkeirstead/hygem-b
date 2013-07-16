@@ -1,4 +1,4 @@
-# Hybrid Model of the Global Building Energy sector
+# Hybrid Global Energy Model of the Buildings sector (HyGEM-B)
 
 This is an R script for calculating the energy consumption of the global buildings sector in 2050, as well as the estimated cost of an aggressive carbon mitigation strategy.  
 
@@ -6,13 +6,17 @@ This is an R script for calculating the energy consumption of the global buildin
 
 The HyGEM model is a hybrid model, so-called because it combines a top-down prediction model of global building energy demand and a bottom-up technical accounting model.  The default configuration is to run these two components together, i.e.
 
-``` source('hygem-b.r')
-``` run_hygem()
+```r
+source('hygem-b.r')
+run_hygem()
+```
 
 However this will first check that the necessary input data are available.  Since one of the input data sets must be downloaded manually from the IEA, the user has a second option to use pre-calculated results from the top-down model, i.e.
 
-``` source('hygem-b.r')
-``` run_hygem(run_top_down=FALSE)
+```r 
+source('hygem-b.r')
+run_hygem(run_top_down=FALSE)
+```
 
 ## Viewing the results
 
