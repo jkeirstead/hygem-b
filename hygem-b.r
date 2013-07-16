@@ -14,11 +14,12 @@ run_hygem <- function(run_top_down=TRUE) {
 
   ## Load required library
   library(knitr)
+  library(markdown)
 
   ## Save the archive flag
   e1 <- new.env(parent=environment())
   assign("run_top_down", run_top_down, envir=e1)
   
   ## Run the model
-  knit2html("code/hygem-b.Rmd", envir=e1)
+  knit2html("code/hygem-b.Rmd", envir=e1, stylesheet='custom.css')
 }
