@@ -124,7 +124,7 @@ run_global_regression <- function(data) {
       geom_line(aes(y=fit)) +
         geom_point(data=train_data, aes(x=year, y=energy), size=pointsize) +
           theme_bw(11) +
-            labs(y="Global building energy demand (EJ)")
+            labs(y="Global building energy demand (EJ)", x="Year")
 
   global_result <- list(model=G, pred=global_pred, plot=gg.global)
   save(global_result, file="../data/global-model.Rda")
@@ -164,7 +164,7 @@ run_regional_regression <- function(data) {
         geom_point(data=subset(regional_data, energy!=0), aes(x=year, y=energy), size=pointsize) +
           facet_wrap( ~ region, ncol=2) +
             theme_bw(11) +
-              labs(y="Regional building energy demand (EJ)")
+              labs(y="Regional building energy demand (EJ)", x="Year")
 
   regional_result <- list(model=R, pred=regional_pred, plot=gg.regional)
   save(regional_result, file="../data/regional-model.Rda")
@@ -208,7 +208,7 @@ run_fuel_regression <- function(data) {
         geom_point(data=train.data.fuel, aes(x=year, y=energy), size=pointsize) + 
           facet_grid(fuel ~ region) + 
             theme_bw(11) + 
-              labs(y="Energy demand (EJ)") +
+              labs(y="Energy demand (EJ)", x="Year") +
                 theme(axis.text.x=element_text(angle=90, hjust=0))
   
   fuel_result <- list(model=F, pred=fuels_pred, plot=gg.fuels)
@@ -346,7 +346,7 @@ show_top_down_results <- function(models) {
 
   ## Set table options
   tblOptions <- getOption("xtable.html.table.attributes",
-                          "border=1 width=400")
+                          "width=400")
   
   ## Table 1
   ## ====================================

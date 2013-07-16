@@ -11,7 +11,7 @@ tmp.xt <- xtable(tmp[,1:2],
                  caption="Capital cost of space-heating retrofit measures (billion USD)")
 print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+                          "width=400"))
 
 ## @knitr heat-pump-costs
 ## From the bottom-up chunks, the basic penetration data is in gshp
@@ -34,7 +34,7 @@ tmp.xt <- xtable(tmp[,1:2],
                  caption="Capital cost of ground-source heat pumps (billion USD)")
 print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+                          "width=400"))
 
 
 ## @knitr efficiency-costs
@@ -53,7 +53,7 @@ tmp.xt <- xtable(tmp,
                  caption="Capital cost of lighting and appliance efficiency investments (billion USD)")
 print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+                          "width=400"))
 
 
 ## @knitr other-costs
@@ -83,7 +83,7 @@ tmp.xt <- xtable(tmp[,1:2],
                  caption="Annual operating and maintenance costs of ground-source heat pumps (billion USD)")
 print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+                          "width=400"))
 
 
 
@@ -208,7 +208,7 @@ tmp.xt <- xtable(results,
                  caption="Summary of cost difference between 2050 LMS and LCS scenarios including annualized capital, operating, and fuel (billion 2010 USD).  Cost per household in 2010 USD per household.")
 print(tmp.xt, include.rownames=FALSE,  type="html",
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=600"))
+                          "width=800"))
 print(tmp.xt, include.rownames=FALSE, file=file.path(outdir, "table-11-cost-summary.tex"))
 
 # Drop the grid decarbonization

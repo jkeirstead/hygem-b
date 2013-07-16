@@ -1,6 +1,6 @@
 ## Bottom-up model
 
-The bottom-up model starts with the results of the top-down regression to provide an estimate of the demand for energy in the buildings sector by fuel type and region.  Five interventions are then modelled to estimate the energy and emissions savings that result from: improved building fabric, increased use of ground-source heat pumps, improved efficiency of electrical appliances and lighting, switching of fuels from fossil to non-fossil sources, and decarbonization of the electricity grid.
+The bottom-up model uses the results of the top-down regression to provide an estimate of building energy demand by fuel type and region.  Five interventions are then modelled to estimate the energy and emissions savings that result from: improved building fabric, increased use of ground-source heat pumps, improved efficiency of electrical appliances and lighting, switching of fuels from fossil to non-fossil sources, and decarbonization of the electricity grid.
 
 ```{r bottom-config}
 ## Read in the model components
@@ -14,7 +14,7 @@ read_chunk('bottom-up-chunks.r')
 
 ### Residential space heat model
 
-This model calculates demand for space heating in the residential based on emperically-observed relationships. 
+This model calculates demand for space heating in the residential based on empirically-observed relationships. 
 ```{r run-space-heat-model}
 ```
 
@@ -44,12 +44,14 @@ This model calculates demand for space heating in the residential based on emper
 ### Summary
 Below is a summary of the energy and emission savings from all of these interventions.
 
+#### Energy demand
 ```{r bottom-up-summary, fig.width=10}
 ```
 
 ```{r energy-summary-table, results='asis'}
 ```
-Additionally there is an assumed change in the carbon intensity of the electricity used.
+
+#### Emissions
 
 ```{r emissions-calculation, fig.width=10}
 ```

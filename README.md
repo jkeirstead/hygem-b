@@ -6,13 +6,13 @@ This is an R script for calculating the energy consumption of the global buildin
 
 The HyGEM model is a hybrid model, so-called because it combines a top-down prediction model of global building energy demand and a bottom-up technical accounting model.  The default configuration is to run these two components together, i.e.
 
-``` source("hygem-b.r")
+``` source('hygem-b.r')
 ``` run_hygem()
 
 However this will first check that the necessary input data are available.  Since one of the input data sets must be downloaded manually from the IEA, the user has a second option to use pre-calculated results from the top-down model, i.e.
 
 ``` source('hygem-b.r')
-``` run_hygem(use_TD_archive=TRUE)
+``` run_hygem(run_top_down=FALSE)
 
 ## Viewing the results
 
@@ -21,4 +21,4 @@ The model results are calculated and presented in an HTML file `hygem-b.html` lo
 
 ## Further information
 
-A manuscript based on this model has been submitted to _Energy and Buildings_ (or _Building and Environment_).  For more information, please contact [j.keirstead@imperial.ac.uk](mailto:j.keirstead@imperial.ac.uk).
+A manuscript based on this model has been submitted to _Energy and Buildings_.  For more information, please contact [j.keirstead@imperial.ac.uk](mailto:j.keirstead@imperial.ac.uk).

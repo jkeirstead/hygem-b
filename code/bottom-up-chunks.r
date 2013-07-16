@@ -50,6 +50,7 @@ resi.out <- ddply(resi.out, .(region), summarize, LMS=sum(LMS), LCS=sum(LCS))
 resi.table.data <- merge(resi.in, resi.out, by="region")
 names(resi.table.data) <- c("Region", "P", "FA", "HDD", "Eff", "UE_LMS", "UE_LCS", "E_LMS", "E_LCS")
 
+require(xtable)
 resi.tbl <- xtable(resi.table.data,
                    caption="Residential space heating calculation by region and scenario. P = population (billions), FA = floor area (m2/cap), HDD = heating degree days (deg C), Eff = space heating efficiency (%), UE = useful energy intensity (kJ/m2 HDD), E = energy demand (EJ). LMS = Low mitigation scenario, LCS = low carbon scenario.",
                    align="llcccccccc",
@@ -57,7 +58,7 @@ resi.tbl <- xtable(resi.table.data,
                    label="tbl:space_heat_calcs")
 ## Print these out
 tblOptions <- getOption("xtable.html.table.attributes",
-                        "border=1 width=600")
+                        "width=800")
 print(resi.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
 print(resi.tbl, file=file.path(outdir, "table-4-space-heat-calcs.tex"), include.rownames=FALSE)
 
@@ -88,14 +89,14 @@ gshp.out <- merge(gshp.out.energy, gshp.out.elec, by="region")
 gshp.table.data <- merge(gshp.in, gshp.out, by="region")
 names(gshp.table.data) <- c("Region", "Households", "Penetration_LMS", "Penetration_LCS", "Heat_out_LMS", "Heat_out_LCS", "Elec_in_LMS", "Elec_in_LCS")
 gshp.tbl <- xtable(gshp.table.data,
-                   caption=sprintf("Residential ground source heat pump (GSHP) calculation by region and scenario. phi = penetration rate. For all regions, heat pumps are assumed to be %d kW, with a capacity factor of %d and a COP of %.1f. LMS = Low mitigation scenario, LCS = low carbon scenario.", size, CF*100, COP),
+                   caption=sprintf("Residential ground source heat pump (GSHP) calculation by region and scenario. phi = penetration rate. For all regions, heat pumps are assumed to be %d kW, with a capacity factor of %d%% and a COP of %.1f. LMS = Low mitigation scenario, LCS = low carbon scenario.", size, CF*100, COP),
                    align="llccccccc",
                    digits=c(0,0,0,1,1,3,3,3,3),
                    label="tbl:GSHP_calcs")
 
 ## Print these out
 tblOptions <- getOption("xtable.html.table.attributes",
-                        "border=1 width=800")
+                        "width=800")
 print(gshp.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
 print(gshp.tbl, file=file.path(outdir, "table-5-gshp-calcs.tex"), include.rownames=FALSE)
 
@@ -111,27 +112,27 @@ efs.tbl <- xtable(efs,
 
 ## Print these out
 tblOptions <- getOption("xtable.html.table.attributes",
-                        "border=1 width=600")
+                        "width=400")
 print(efs.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
 print(efs.tbl, file=file.path(outdir, "table-6-elec-emissions-factors.tex"), include.rownames=FALSE)
 
 ## @knitr run-electrical-model
 elec.eff <- calculate_electrical_savings(elec_share)
-sprintf("Total savings from improved electrical appliance and lighting efficiency = %.2f EJ", sum(elec.eff$saving))
+message(sprintf("Total savings from improved electrical appliance and lighting efficiency = %.2f EJ", sum(elec.eff$saving)))
 message('Use the following table on the "R input" tab of the spreadsheet model')
 ## Calculate the residential and commercial shares needed by the costing model
 tmp <- subset(elec_share, year==2050)
 tmp <- transform(tmp, region=region, residential=elec_resi*res_nonheatelec*eff + elec_resi*(1-res_nonheatelec),
                  commercial=elec_comm*comm_nonheatelec*eff + elec_comm*(1-comm_nonheatelec))
 tmp <- summarize(tmp, region=region, residential=elec_resi-residential, commercial=elec_comm-commercial)
-require(xtable)
+
 tmp.xt <- xtable(tmp,
                   align="llrr",
                   digits=c(0,0,3,3),
                   caption="Summary of electrical efficiency savings by region (EJ)")
 print(tmp.xt, type="html", include.rownames=FALSE,
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+                          "width=400"))
 
 ## @knitr run-fuel-switch-model
 fuel_transfer <- calculate_fuel_switching(heat_fuel_data)
@@ -195,7 +196,7 @@ summary.tbl <- xtable(tmp,
                       digits=c(0,0,rep(1,6)))
 ## For some reason adding a label to this table messes up the HTML formatting.
 
-tblOptions <- getOption("xtable.html.table.attributes", "border=1 width=600")
+tblOptions <- getOption("xtable.html.table.attributes", "width=800")
 print(summary.tbl, include.rownames=FALSE, type="html", html.table.attributes=tblOptions)
 print(summary.tbl, file=file.path(outdir, "table-7-summary-energy.tex"), include.rownames=FALSE)
 
@@ -237,5 +238,5 @@ tmp2.xt <- xtable(tmp2,
                   caption="Greenhouse gas emissions by region in 2050 (Gt CO2). LMS = low mitigation scenario, LCS = low carbon scenario.")
 print(tmp2.xt, type="html", include.rownames=FALSE,
       html.table.attributes=getOption("xtable.html.table.attributes",
-                          "border=1 width=400"))
+                          "width=400"))
 print(tmp2.xt, include.rownames=FALSE, file=file.path(outdir, "table-8-emissions-summary.tex"))

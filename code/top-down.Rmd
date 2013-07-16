@@ -15,7 +15,7 @@ The top-down model uses regression models to estimate the energy consumption of 
 
 ### Results
 
-There are three separate top-down models: one calculating global building energy demands in aggregate (**global**), one calculating building energy demands disaggregated by region (**region**), and one with demands disaggregated by both region and fuel (**fuel**).  It is the `fuel` model which is used to calibrate the bottom-up model.
+There are three separate top-down models: one calculating global building energy demands in aggregate (**Global**), one calculating building energy demands disaggregated by region (**Regional**), and one with demands disaggregated by both region and fuel (**Fuels**).  It is the **fuels** model which is used to calibrate the bottom-up model.
 
 #### Global 
 ```{r top-down-global, echo=FALSE}
