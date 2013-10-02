@@ -25,4 +25,4 @@ The model results are calculated and presented in an HTML file `hygem-b.html` lo
 
 ## Further information
 
-A manuscript based on this model has been submitted to _Energy and Buildings_.  For more information, please contact [j.keirstead@imperial.ac.uk](mailto:j.keirstead@imperial.ac.uk).
+A manuscript based on this model has been submitted to _Building and Environment_.  For more information, please contact [j.keirstead@imperial.ac.uk](mailto:j.keirstead@imperial.ac.uk).

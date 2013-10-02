@@ -37,6 +37,6 @@ if (run_top_down) {
 
 ## More information
 
-Version 0.1.1
+Version 0.1.2
 
-A manuscript based on this model has been submitted to _Energy Policy_.  For more information, please contact [j.keirstead@imperial.ac.uk](mailto:j.keirstead@imperial.ac.uk).
+A manuscript based on this model has been submitted to _Building and Environment_.  For more information, please contact [j.keirstead@imperial.ac.uk](mailto:j.keirstead@imperial.ac.uk).
